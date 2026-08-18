@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "name": "ai-commerce-fe-playground",
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "generate": "nuxt generate"
+  },
+  "dependencies": {
+    "@ai-commerce/fe": "latest",
+    "nuxt": "^4.5.2"
+  }
+}
