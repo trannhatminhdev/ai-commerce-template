@@ -9,19 +9,6 @@ ai-commerce-template/
 ├── apps/
 │   ├── be/                     # NestJS Backend (Hexagonal Architecture)
 │   └── fe/                     # Nuxt Module Frontend & Playground
-├── docker/                     # Cấu hình Docker & Docker Compose
-│   ├── be/
-│   │   ├── Dockerfile          # Production Dockerfile cho Backend
-│   │   ├── Dockerfile.dev      # Development Dockerfile cho Backend
-│   │   ├── docker-entrypoint.sh    # Production entrypoint script
-│   │   └── docker-entrypoint.dev.sh# Development entrypoint script
-│   ├── fe/
-│   │   ├── Dockerfile          # Production Dockerfile cho Frontend
-│   │   └── Dockerfile.dev      # Development Dockerfile cho Frontend
-│   ├── docker-compose.yml      # Compose Production
-│   ├── docker-compose.dev.yml  # Compose Development (Hot-reload)
-│   └── README.md
-├── .dockerignore               # Bỏ qua file khi build Docker image
 ├── .env.example                # Cấu hình biến môi trường mẫu
 ├── pnpm-workspace.yaml
 ├── pnpm-lock.yaml
@@ -29,25 +16,26 @@ ai-commerce-template/
 └── package.json
 ```
 
-## 🚀 Khởi chạy nhanh với Docker
+## 🚀 Khởi chạy dự án
 
 ```bash
-# 1. Tạo file biến môi trường từ mẫu
+# 1. Cài đặt dependencies
+pnpm install
+
+# 2. Tạo file biến môi trường từ mẫu
 cp .env.example .env
 
-# 2. Khởi chạy toàn bộ hệ thống ở chế độ Development (Hot reload)
-docker compose -f docker/docker-compose.dev.yml up --build
+# 3. Khởi chạy toàn bộ hệ thống ở chế độ Development
+pnpm dev
 
-# Hoặc khởi chạy chế độ Production
-docker compose -f docker/docker-compose.yml up --build -d
+# Hoặc khởi chạy riêng lẻ từng app
+pnpm --filter be dev          # Backend (http://localhost:3000/api/v1)
+pnpm --filter @ai-commerce/fe dev  # Frontend (http://localhost:3001)
 ```
 
 ### Các cổng dịch vụ mặc định:
 - **Backend API**: [http://localhost:3000/api/v1](http://localhost:3000/api/v1)
 - **Frontend App**: [http://localhost:3001](http://localhost:3001)
-- **PostgreSQL**: `localhost:5432`
-- **Redis**: `localhost:6379`
 
-Chi tiết xem tại [`docker/README.md`](file:///home/minh/Code/ai-commerce-template/docker/README.md).
 
 

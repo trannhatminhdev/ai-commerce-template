@@ -52,12 +52,7 @@ Agent PHẢI tuân thủ các quy tắc sau.
 | Backend | `be` | `apps/be` |
 | Frontend | `@ai-commerce/fe` | `apps/fe` |
 
-### 4. Docker
-
-- Thư mục `docker/` chứa cấu hình Docker cho dự án
-- Khi thêm service mới (Redis, Elasticsearch, ...), cập nhật docker-compose tương ứng
-
-### 5. Shared Code
+### 4. Shared Code
 
 - Nếu cần chia sẻ code giữa BE và FE (types, constants), tạo thêm package trong `packages/`
 - Đăng ký package mới trong `pnpm-workspace.yaml`

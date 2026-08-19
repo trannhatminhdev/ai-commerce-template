@@ -9,19 +9,14 @@
     "apps/*"
   ],
   "scripts": {
+    "dev": "turbo run dev",
     "build": "turbo run build",
     "build:be": "pnpm --filter be build",
     "build:fe": "pnpm --filter @ai-commerce/fe build",
     "lint": "turbo run lint",
     "typecheck": "turbo typecheck",
     "test": "turbo run test",
-    "test:cov": "turbo run test:cov",
-    "docker:dev": "docker compose -f docker/docker-compose.dev.yml up --build",
-    "docker:dev:d": "docker compose -f docker/docker-compose.dev.yml up -d --build",
-    "docker:dev:down": "docker compose -f docker/docker-compose.dev.yml down",
-    "docker:prod": "docker compose -f docker/docker-compose.yml up --build -d",
-    "docker:prod:down": "docker compose -f docker/docker-compose.yml down",
-    "docker:logs": "docker compose -f docker/docker-compose.dev.yml logs -f"
+    "test:cov": "turbo run test:cov"
   },
   "devDependencies": {
     "prettier": "^3.4.2",
