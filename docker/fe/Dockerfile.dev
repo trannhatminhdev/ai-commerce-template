@@ -1,0 +1,26 @@
+# =============================================================
+# Development Dockerfile cho Frontend (Nuxt)
+# =============================================================
+FROM node:26-alpine
+
+# Cài đặt pnpm
+RUN npm install -g pnpm@11.22.0
+
+WORKDIR /app
+
+COPY apps/fe/package.json ./package.json
+COPY apps/fe/playground/package.json ./playground/package.json
+
+# Cài đặt dependencies cho Frontend
+RUN pnpm install --ignore-scripts && pnpm rebuild
+
+# Copy toàn bộ mã nguồn Frontend
+COPY apps/fe/ .
+
+ENV NODE_ENV=development
+ENV HOST=0.0.0.0
+ENV PORT=3000
+
+EXPOSE 3000
+
+CMD ["pnpm", "dev", "--host", "0.0.0.0"]

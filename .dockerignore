@@ -17,7 +17,6 @@ coverage/
 # Environment files
 .env.local
 .env.*.local
-.env
 
 # Version control & IDE
 .git/
