@@ -1,17 +1,30 @@
 {
   "name": "ai-commerce-template",
-  "private": true,
-  "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev",
-    "lint": "turbo run lint",
-    "test": "turbo run test"
-  },
-  "devDependencies": {
-    "turbo": "^2.0.0"
+  "packageManager": "pnpm@11.22.0",
+  "engines": {
+    "node": ">=26.0.0",
+    "pnpm": ">=11.22.0"
   },
   "workspaces": [
     "apps/*"
   ],
-  "packageManager": "pnpm@9.0.0"
+  "scripts": {
+    "build": "turbo run build",
+    "build:be": "pnpm --filter be build",
+    "build:fe": "pnpm --filter @ai-commerce/fe build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo typecheck",
+    "test": "turbo run test",
+    "test:cov": "turbo run test:cov",
+    "docker:dev": "docker compose -f docker/docker-compose.dev.yml up --build",
+    "docker:dev:d": "docker compose -f docker/docker-compose.dev.yml up -d --build",
+    "docker:dev:down": "docker compose -f docker/docker-compose.dev.yml down",
+    "docker:prod": "docker compose -f docker/docker-compose.yml up --build -d",
+    "docker:prod:down": "docker compose -f docker/docker-compose.yml down",
+    "docker:logs": "docker compose -f docker/docker-compose.dev.yml logs -f"
+  },
+  "devDependencies": {
+    "prettier": "^3.4.2",
+    "turbo": "^2.0.0"
+  }
 }

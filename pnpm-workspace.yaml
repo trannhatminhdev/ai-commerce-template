@@ -1,2 +1,5 @@
 packages:
   - 'apps/*'
+
+overrides:
+  esbuild: "^0.25.0"

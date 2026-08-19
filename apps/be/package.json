@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "description": "",
   "author": "",
-  "private": true,
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
@@ -23,8 +22,8 @@
   "dependencies": {
     "@nestjs/common": "^11.0.1",
     "@nestjs/core": "^11.0.1",
-    "@nestjs/config": "^3.3.0",
-    "@nestjs/event-emitter": "^2.1.1",
+    "@nestjs/config": "^4.0.4",
+    "@nestjs/event-emitter": "^3.1.0",
     "@nestjs/platform-express": "^11.0.1",
     "@prisma/client": "^6.0.0",
     "class-transformer": "^0.5.1",
