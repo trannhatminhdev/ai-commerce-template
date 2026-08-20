@@ -25,7 +25,9 @@ describe('AdminCategoriesController', () => {
       ],
     }).compile();
 
-    controller = module.get<AdminCategoriesController>(AdminCategoriesController);
+    controller = module.get<AdminCategoriesController>(
+      AdminCategoriesController,
+    );
   });
 
   it('should be defined', () => {

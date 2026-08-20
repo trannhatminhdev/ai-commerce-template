@@ -1,5 +1,6 @@
-import { Injectable, Inject, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { IProductRepository } from '../interfaces/product-repository.interface';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class ProductsService {
@@ -8,11 +9,16 @@ export class ProductsService {
     private readonly productRepository: IProductRepository,
   ) {}
 
-  async createProduct(data: any) {
+  async createProduct(data: Prisma.ProductUncheckedCreateInput) {
     return this.productRepository.createProduct(data);
   }
 
-  async findAllProducts(params?: any) {
+  async findAllProducts(params?: {
+    skip?: number;
+    take?: number;
+    search?: string;
+    categoryId?: number;
+  }) {
     return this.productRepository.findAllProducts(params);
   }
 
@@ -24,7 +30,7 @@ export class ProductsService {
     return product;
   }
 
-  async updateProduct(id: number, data: any) {
+  async updateProduct(id: number, data: Prisma.ProductUncheckedUpdateInput) {
     await this.findProductById(id);
     return this.productRepository.updateProduct(id, data);
   }
@@ -34,14 +40,18 @@ export class ProductsService {
     return this.productRepository.deleteProduct(id);
   }
 
-  async addImage(productId: number, data: { imageUrl: string; isThumbnail?: boolean }) {
+  async addImage(
+    productId: number,
+    data: { imageUrl: string; isThumbnail?: boolean },
+  ) {
     await this.findProductById(productId);
-    
+
     // Logic: Nếu chưa có thumbnail nào hoặc data request muốn set làm thumbnail
-    const currentImages = await this.productRepository.findImagesByProductId(productId);
-    
+    const currentImages =
+      await this.productRepository.findImagesByProductId(productId);
+
     let isThumbnail = data.isThumbnail || false;
-    
+
     if (currentImages.length === 0) {
       // Ảnh đầu tiên mặc định là thumbnail
       isThumbnail = true;
@@ -49,7 +59,7 @@ export class ProductsService {
 
     if (isThumbnail && currentImages.length > 0) {
       // Nếu set ảnh này làm thumbnail, cần xoá cờ thumbnail của các ảnh khác
-      const currentThumbnail = currentImages.find(img => img.isThumbnail);
+      const currentThumbnail = currentImages.find((img) => img.isThumbnail);
       if (currentThumbnail) {
         // Có thể cần 1 method setThumbnail để đổi cờ
         // Hoặc updateImage (nhưng interface chưa có)
@@ -58,12 +68,15 @@ export class ProductsService {
       }
     }
 
-    const newImage = await this.productRepository.addImage(productId, { ...data, isThumbnail });
-    
+    const newImage = await this.productRepository.addImage(productId, {
+      ...data,
+      isThumbnail,
+    });
+
     if (isThumbnail && currentImages.length > 0) {
       await this.productRepository.setThumbnail(productId, newImage.id);
     }
-    
+
     return newImage;
   }
 
@@ -77,7 +90,10 @@ export class ProductsService {
     return this.productRepository.setThumbnail(productId, imageId);
   }
 
-  async addSpecification(productId: number, data: { specName: string; specValue: string }) {
+  async addSpecification(
+    productId: number,
+    data: { specName: string; specValue: string },
+  ) {
     await this.findProductById(productId);
     return this.productRepository.addSpecification(productId, data);
   }
