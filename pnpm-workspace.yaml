@@ -1,8 +1,13 @@
 packages:
   - 'apps/*'
 
-allowBuilds:
-  bcrypt: set this to true or false
-
 overrides:
   esbuild: "^0.25.0"
+
+allowBuilds:
+  '@prisma/client': true
+  '@prisma/engines': true
+  '@scarf/scarf': true
+  'esbuild': true
+  'prisma': true
+  'unrs-resolver': true
