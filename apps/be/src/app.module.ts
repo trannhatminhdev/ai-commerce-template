@@ -10,13 +10,13 @@ import { AppService } from './app.service';
   imports: [
     // Core Module chứa Config và Database connection
     CoreModule,
-    
+
     // Shared Module chứa các utility, decorator xài chung
     SharedModule,
-    
+
     // Cấu hình Event Emitter cho giao tiếp bất đồng bộ (giúp tách microservices sau này)
     EventEmitterModule.forRoot(),
-    
+
     // Feature Modules
     AuthModule,
   ],

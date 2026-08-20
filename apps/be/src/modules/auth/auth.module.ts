@@ -8,8 +8,8 @@ import { AuthRepository } from './infrastructure/repositories/auth.repository';
   controllers: [AuthController],
   providers: [
     AuthService,
-    // Binding (Provider) cho Dependency Injection: Khi Service cần IAuthRepository, 
-    // NestJS sẽ tự động inject instance của AuthRepository. 
+    // Binding (Provider) cho Dependency Injection: Khi Service cần IAuthRepository,
+    // NestJS sẽ tự động inject instance của AuthRepository.
     // Điều này giúp dễ dàng swap Repository (VD: đổi từ Postgres sang MongoDB)
     {
       provide: IAuthRepository,

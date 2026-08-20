@@ -1,17 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { IAuthRepository } from '../../application/interfaces/auth-repository.interface';
+import { User } from '../../domain/entities/user.entity';
 
 @Injectable()
 export class AuthRepository implements IAuthRepository {
   // Adapter thực tế tương tác với Database (Prisma/TypeORM/...)
-  
-  async findByEmail(email: string): Promise<any> {
+
+  findByEmail(email: string): Promise<User | null> {
     // Gọi Database thật ở đây
-    return { id: 1, email };
+    return Promise.resolve({ id: 1, email });
   }
 
-  async save(user: any): Promise<any> {
+  save(user: User): Promise<User> {
     // Gọi Database thật ở đây
-    return user;
+    return Promise.resolve(user);
   }
 }

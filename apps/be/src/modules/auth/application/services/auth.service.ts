@@ -1,5 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { IAuthRepository } from '../interfaces/auth-repository.interface';
+import { LoginResult } from '../../domain/entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -14,7 +15,7 @@ export class AuthService {
     return 'Auth module is running!';
   }
 
-  async login(email: string): Promise<any> {
+  async login(email: string): Promise<LoginResult> {
     // Xử lý logic nghiệp vụ ở đây (validate password, generate token, v.v...)
     const user = await this.authRepository.findByEmail(email);
     if (!user) {
