@@ -20,7 +20,9 @@ export class AdminAuthController {
   async login(@Body() loginDto: LoginDto) {
     const result = await this.authService.login(loginDto);
     if (result.user.role !== Role.ADMIN) {
-      throw new UnauthorizedException('You do not have admin privileges');
+      throw new UnauthorizedException(
+        'Tài khoản không có quyền quản trị viên (Admin).',
+      );
     }
     return result;
   }

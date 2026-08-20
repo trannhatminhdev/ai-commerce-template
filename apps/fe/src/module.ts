@@ -10,8 +10,12 @@ import { setupAdminRoutes } from './runtime/admin/routes';
 import homeRoute from './runtime/user/home/route';
 
 // Module options TypeScript interface definition
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface ModuleOptions {}
+export interface ModuleOptions {
+  /**
+   * Base URL của backend API (mặc định: http://localhost:3000/api/v1)
+   */
+  apiBase?: string;
+}
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {
@@ -19,9 +23,18 @@ export default defineNuxtModule<ModuleOptions>({
     configKey: 'aiCommerceFe',
   },
   // Default configuration options of the Nuxt module
-  defaults: {},
-  async setup(_options, nuxt) {
+  defaults: {
+    apiBase: 'http://localhost:3000/api/v1',
+  },
+  async setup(options, nuxt) {
     const resolver = createResolver(import.meta.url);
+
+    // Pass module options to runtime config
+    nuxt.options.runtimeConfig.public = nuxt.options.runtimeConfig.public || {};
+    nuxt.options.runtimeConfig.public.apiBase =
+      (nuxt.options.runtimeConfig.public.apiBase as string) ||
+      options.apiBase ||
+      'http://localhost:3000/api/v1';
 
     await installModule('@nuxtjs/tailwindcss', {
       exposeConfig: true,
@@ -39,8 +52,11 @@ export default defineNuxtModule<ModuleOptions>({
       });
     });
 
-    // Register composables
+    // Register composables & services
     addImportsDir(resolver.resolve('./runtime/core/composables'));
+    addImportsDir(resolver.resolve('./runtime/core/services'));
+    addImportsDir(resolver.resolve('./runtime/admin/auth/composables'));
+    addImportsDir(resolver.resolve('./runtime/admin/auth/services'));
 
     // Do not add the extension since the `.ts` will be transpiled to `.mjs` after `npm run prepack`
     addPlugin(resolver.resolve('./runtime/plugin'));

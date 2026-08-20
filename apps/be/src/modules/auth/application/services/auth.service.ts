@@ -25,7 +25,7 @@ export class AuthService implements OnModuleInit {
 
   async onModuleInit() {
     // Seed default root admin account
-    const rootAdminEmail = 'admin@ai-commerce.com';
+    const rootAdminEmail = 'admin@gmail.com';
     const existingAdmin = await this.userService.findByEmail(rootAdminEmail);
     if (!existingAdmin) {
       await this.userService.create({
@@ -56,7 +56,7 @@ export class AuthService implements OnModuleInit {
   async login(loginDto: LoginDto) {
     const user = await this.userService.findByEmail(loginDto.email);
     if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException('Email hoặc mật khẩu không chính xác.');
     }
 
     const isPasswordValid = await bcrypt.compare(
@@ -64,7 +64,7 @@ export class AuthService implements OnModuleInit {
       user.passwordHash,
     );
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException('Email hoặc mật khẩu không chính xác.');
     }
 
     const payload = { sub: user.id, email: user.email };
