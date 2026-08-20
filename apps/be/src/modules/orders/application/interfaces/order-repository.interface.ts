@@ -24,4 +24,5 @@ export interface IOrderRepository {
   findAll(filters?: { userId?: number }): Promise<OrderWithItems[]>;
   findById(id: number): Promise<OrderWithItems | null>;
   updateStatus(id: number, status: string): Promise<OrderWithItems>;
+  hasUserPurchasedProduct(userId: number, productId: number): Promise<boolean>;
 }

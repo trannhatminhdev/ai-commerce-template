@@ -33,4 +33,11 @@ export class OrdersService {
     await this.getOrderById(id); // Ensure exists
     return this.orderRepository.updateStatus(id, status);
   }
+
+  async hasUserPurchasedProduct(
+    userId: number,
+    productId: number,
+  ): Promise<boolean> {
+    return this.orderRepository.hasUserPurchasedProduct(userId, productId);
+  }
 }

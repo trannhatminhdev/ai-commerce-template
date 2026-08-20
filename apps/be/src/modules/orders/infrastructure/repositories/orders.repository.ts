@@ -82,4 +82,20 @@ export class OrdersRepository implements IOrderRepository {
       include: { items: true },
     });
   }
+
+  async hasUserPurchasedProduct(
+    userId: number,
+    productId: number,
+  ): Promise<boolean> {
+    const count = await this.prisma.order.count({
+      where: {
+        userId,
+        status: { in: ['COMPLETED', 'DELIVERED'] },
+        items: {
+          some: { productId },
+        },
+      },
+    });
+    return count > 0;
+  }
 }
