@@ -18,6 +18,7 @@ model User {
   updatedAt    DateTime @updatedAt @map("updated_at")
 
   tokens UserToken[]
+  orders Order[]
 
   @@map("users")
 }
@@ -62,6 +63,7 @@ model Product {
   category       Category               @relation(fields: [categoryId], references: [id], onDelete: Restrict)
   images         ProductImage[]
   specifications ProductSpecification[]
+  orderItems     OrderItem[]
 
   @@map("products")
 }
@@ -88,4 +90,48 @@ model ProductSpecification {
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@map("product_specifications")
+}
+
+model Order {
+  id              Int      @id @default(autoincrement())
+  userId          Int?     @map("user_id")
+  customerName    String   @map("customer_name")
+  customerPhone   String   @map("customer_phone")
+  shippingAddress String   @map("shipping_address")
+  shippingMethod  String   @map("shipping_method")
+  paymentMethod   String   @map("payment_method")
+  totalAmount     Float    @map("total_amount")
+  status          String   @default("PENDING")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  user  User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  items OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id        Int      @id @default(autoincrement())
+  orderId   Int      @map("order_id")
+  productId Int      @map("product_id")
+  quantity  Int
+  unitPrice Float    @map("unit_price")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+
+  @@map("order_items")
+}
+
+model Voucher {
+  id            Int      @id @default(autoincrement())
+  code          String   @unique
+  discountValue Float    @map("discount_value")
+  discountType  String   @map("discount_type") // PERCENT or FIXED
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@map("vouchers")
 }

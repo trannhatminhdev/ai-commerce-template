@@ -3,8 +3,10 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { CoreModule } from './core/core.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CategoriesModule } from './modules/categories/categories.module';
+import { OrdersModule } from './modules/orders/orders.module';
 import { ProductsModule } from './modules/products/products.module';
 import { UsersModule } from './modules/users/users.module';
+import { VouchersModule } from './modules/vouchers/vouchers.module';
 import { SharedModule } from './shared/shared.module';
 
 @Module({
@@ -21,6 +23,8 @@ import { SharedModule } from './shared/shared.module';
     UsersModule,
     CategoriesModule,
     ProductsModule,
+    VouchersModule,
+    OrdersModule,
   ],
 })
 export class AppModule {}
