@@ -3,6 +3,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { CoreModule } from './core/core.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
+import { CategoriesModule } from './modules/categories/categories.module';
 import { SharedModule } from './shared/shared.module';
 
 @Module({
@@ -17,6 +18,7 @@ import { SharedModule } from './shared/shared.module';
     // Feature Modules
     AuthModule,
     UsersModule,
+    CategoriesModule,
   ],
 })
 export class AppModule {}
