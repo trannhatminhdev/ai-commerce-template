@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-
 import { Test, TestingModule } from '@nestjs/testing';
 import { CategoriesController } from '../../src/modules/categories/presentation/http/categories.controller';
 import { CategoriesService } from '../../src/modules/categories/application/services/categories.service';
