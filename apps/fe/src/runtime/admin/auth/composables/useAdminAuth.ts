@@ -11,7 +11,7 @@ export function useAdminAuth() {
   const user = useState<AdminUser | null>('admin_auth_user', () => null);
   const accessToken = useCookie<string | null>('admin_access_token', {
     default: () => null,
-    maxAge: 60 * 60 * 24 * 7, // 7 days
+    maxAge: 60 * 15, // 15 minutes
     sameSite: 'lax',
     path: '/',
   });

@@ -1,17 +1,17 @@
 import {
   Inject,
   Injectable,
-  UnauthorizedException,
   OnModuleInit,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
+import { Role } from '../../../../shared/constants/role.enum';
 import { UserService } from '../../../users/application/services/user.service';
 import { LoginDto } from '../../presentation/http/dtos/login.dto';
 import { RegisterDto } from '../../presentation/http/dtos/register.dto';
 import { ITokenRepository } from '../interfaces/token-repository.interface';
-import { Role } from '../../../../shared/constants/role.enum';
 
 @Injectable()
 export class AuthService implements OnModuleInit {
@@ -25,7 +25,8 @@ export class AuthService implements OnModuleInit {
 
   async onModuleInit() {
     // Seed default root admin account
-    const rootAdminEmail = 'admin@gmail.com';
+    const rootAdminEmail =
+      this.configService.get<string>('ADMIN_ROOT_EMAIL') || 'admin@gmail.com';
     const existingAdmin = await this.userService.findByEmail(rootAdminEmail);
     if (!existingAdmin) {
       await this.userService.create({
@@ -71,12 +72,18 @@ export class AuthService implements OnModuleInit {
     const accessToken = this.jwtService.sign(payload);
 
     // Generate refresh token
+    const refreshExpiresIn =
+      this.configService.get<JwtSignOptions['expiresIn']>(
+        'JWT_REFRESH_EXPIRES_IN',
+      ) || '7d';
+    const refreshDays = parseInt(String(refreshExpiresIn), 10) || 7;
+
     const refreshToken = this.jwtService.sign(payload, {
-      expiresIn: '7d', // Refresh token lives longer
+      expiresIn: refreshExpiresIn,
     });
 
     const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + 7);
+    expiresAt.setDate(expiresAt.getDate() + refreshDays);
 
     // Lưu refresh token vào DB
     await this.tokenRepository.create({
@@ -125,12 +132,18 @@ export class AuthService implements OnModuleInit {
       // Cấp mới
       const newPayload = { sub: user.id, email: user.email };
       const newAccessToken = this.jwtService.sign(newPayload);
+      const refreshExpiresIn =
+        this.configService.get<JwtSignOptions['expiresIn']>(
+          'JWT_REFRESH_EXPIRES_IN',
+        ) || '7d';
+      const refreshDays = parseInt(String(refreshExpiresIn), 10) || 7;
+
       const newRefreshToken = this.jwtService.sign(newPayload, {
-        expiresIn: '7d',
+        expiresIn: refreshExpiresIn,
       });
 
       const expiresAt = new Date();
-      expiresAt.setDate(expiresAt.getDate() + 7);
+      expiresAt.setDate(expiresAt.getDate() + refreshDays);
 
       // Cập nhật lại
       await this.tokenRepository.create({
