@@ -10,6 +10,8 @@
   ],
   "scripts": {
     "dev": "turbo run dev",
+    "dev:be": "pnpm --filter be dev",
+    "dev:fe": "pnpm --filter @ai-commerce/fe dev",
     "build": "turbo run build",
     "build:be": "pnpm --filter be build",
     "build:fe": "pnpm --filter @ai-commerce/fe build",

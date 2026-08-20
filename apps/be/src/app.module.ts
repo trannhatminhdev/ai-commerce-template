@@ -1,16 +1,15 @@
 import { Module } from '@nestjs/common';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { CoreModule } from './core/core.module';
-import { SharedModule } from './shared/shared.module';
-import { AuthModule } from './modules/auth/auth.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { CoreModule } from './core/core.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { UsersModule } from './modules/users/users.module';
+import { SharedModule } from './shared/shared.module';
 
 @Module({
   imports: [
-    // Core Module chứa Config và Database connection
     CoreModule,
-
     // Shared Module chứa các utility, decorator xài chung
     SharedModule,
 
@@ -19,6 +18,7 @@ import { AppService } from './app.service';
 
     // Feature Modules
     AuthModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
