@@ -6,7 +6,11 @@ import { CategoriesService } from '../../src/modules/categories/application/serv
 
 describe('AdminCategoriesController', () => {
   let controller: AdminCategoriesController;
-  let mockService: jest.Mocked<Partial<CategoriesService>>;
+  let mockService: {
+    create: jest.Mock;
+    update: jest.Mock;
+    delete: jest.Mock;
+  };
 
   beforeEach(async () => {
     mockService = {

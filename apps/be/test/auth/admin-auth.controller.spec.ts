@@ -9,7 +9,7 @@ import { Role } from '../../src/shared/constants/role.enum';
 
 describe('AdminAuthController', () => {
   let controller: AdminAuthController;
-  let authService: jest.Mocked<Partial<AuthService>>;
+  let authService: Partial<Record<keyof AuthService, jest.Mock>>;
 
   beforeEach(async () => {
     authService = {

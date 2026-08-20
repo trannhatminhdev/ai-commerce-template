@@ -6,7 +6,10 @@ import { CategoriesService } from '../../src/modules/categories/application/serv
 
 describe('CategoriesController', () => {
   let controller: CategoriesController;
-  let mockService: jest.Mocked<Partial<CategoriesService>>;
+  let mockService: {
+    findAll: jest.Mock;
+    findById: jest.Mock;
+  };
 
   beforeEach(async () => {
     mockService = {
