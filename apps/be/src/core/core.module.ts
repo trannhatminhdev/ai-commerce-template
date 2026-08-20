@@ -7,7 +7,7 @@ import { DatabaseModule } from './database/database.module';
     // Cấu hình biến môi trường toàn cục
     ConfigModule.forRoot({
       isGlobal: true, // Không cần import lại ở các module khác
-      envFilePath: '.env',
+      envFilePath: ['.env', '../../.env'],
     }),
     DatabaseModule, // Module quản lý kết nối DB
   ],

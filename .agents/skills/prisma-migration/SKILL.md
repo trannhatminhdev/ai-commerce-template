@@ -16,6 +16,7 @@ Khi cần thay đổi database schema, PHẢI tuân theo quy trình sau.
 - Schema: `apps/be/prisma/schema.prisma`
 - Migrations: `apps/be/prisma/migrations/`
 - Working directory cho các lệnh Prisma: `apps/be/`
+- Database mặc định: **SQLite** (`file:./dev.db`). Khi đổi sang PostgreSQL/MySQL, chỉ cần đổi `provider` trong `schema.prisma` và `DATABASE_URL` trong `.env`.
 
 ## Quy trình từng bước
 

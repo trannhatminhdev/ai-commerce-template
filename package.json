@@ -16,7 +16,10 @@
     "lint": "turbo run lint",
     "typecheck": "turbo typecheck",
     "test": "turbo run test",
-    "test:cov": "turbo run test:cov"
+    "test:cov": "turbo run test:cov",
+    "db:generate": "pnpm --filter be prisma:generate",
+    "db:migrate": "pnpm --filter be prisma:migrate",
+    "db:studio": "pnpm --filter be prisma:studio"
   },
   "devDependencies": {
     "prettier": "^3.4.2",
