@@ -2,8 +2,9 @@ import { Module } from '@nestjs/common';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { CoreModule } from './core/core.module';
 import { AuthModule } from './modules/auth/auth.module';
-import { UsersModule } from './modules/users/users.module';
 import { CategoriesModule } from './modules/categories/categories.module';
+import { ProductsModule } from './modules/products/products.module';
+import { UsersModule } from './modules/users/users.module';
 import { SharedModule } from './shared/shared.module';
 
 @Module({
@@ -19,6 +20,7 @@ import { SharedModule } from './shared/shared.module';
     AuthModule,
     UsersModule,
     CategoriesModule,
+    ProductsModule,
   ],
 })
 export class AppModule {}
