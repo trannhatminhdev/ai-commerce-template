@@ -5,7 +5,7 @@ import { ProductsService } from '../../src/modules/products/application/services
 
 describe('AdminProductsController', () => {
   let controller: AdminProductsController;
-  let service: jest.Mocked<Partial<ProductsService>>;
+  let service: Partial<Record<keyof ProductsService, jest.Mock>>;
 
   beforeEach(async () => {
     service = {

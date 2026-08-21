@@ -5,7 +5,7 @@ import { ReviewsService } from '../../src/modules/reviews/application/services/r
 
 describe('AdminReviewsController', () => {
   let controller: AdminReviewsController;
-  let service: jest.Mocked<Partial<ReviewsService>>;
+  let service: Partial<Record<keyof ReviewsService, jest.Mock>>;
 
   beforeEach(async () => {
     service = {

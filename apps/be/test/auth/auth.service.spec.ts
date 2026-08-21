@@ -70,17 +70,19 @@ describe('AuthService', () => {
   describe('onModuleInit', () => {
     it('should create a root admin if it does not exist', async () => {
       userService.findByEmail.mockResolvedValue(null);
-      configService.get.mockReturnValue('admin123');
+      configService.get.mockImplementation((key: string) => {
+        if (key === 'ADMIN_ROOT_EMAIL') return 'admin@gmail.com';
+        if (key === 'ADMIN_ROOT_PASSWORD') return 'admin123';
+        return undefined;
+      });
       userService.create.mockResolvedValue({ id: 1 } as any);
 
       await service.onModuleInit();
 
-      expect(userService.findByEmail).toHaveBeenCalledWith(
-        'admin@ai-commerce.com',
-      );
+      expect(userService.findByEmail).toHaveBeenCalledWith('admin@gmail.com');
       expect(configService.get).toHaveBeenCalledWith('ADMIN_ROOT_PASSWORD');
       expect(userService.create).toHaveBeenCalledWith({
-        email: 'admin@ai-commerce.com',
+        email: 'admin@gmail.com',
         passwordHash: 'admin123',
         fullName: 'System Admin',
         role: Role.ADMIN,
@@ -88,13 +90,15 @@ describe('AuthService', () => {
     });
 
     it('should not create a root admin if it already exists', async () => {
+      configService.get.mockImplementation((key: string) => {
+        if (key === 'ADMIN_ROOT_EMAIL') return 'admin@gmail.com';
+        return undefined;
+      });
       userService.findByEmail.mockResolvedValue({ id: 1 } as any);
 
       await service.onModuleInit();
 
-      expect(userService.findByEmail).toHaveBeenCalledWith(
-        'admin@ai-commerce.com',
-      );
+      expect(userService.findByEmail).toHaveBeenCalledWith('admin@gmail.com');
       expect(userService.create).not.toHaveBeenCalled();
     });
   });

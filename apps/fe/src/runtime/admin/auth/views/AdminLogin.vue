@@ -136,7 +136,7 @@
                 name="email"
                 autocomplete="email"
                 required
-                placeholder="admin@ai-commerce.com"
+                placeholder="admin@gmail.com"
                 class="w-full rounded-[4px] border border-[#C3C6D6] bg-white py-2.5 pl-10 pr-3 text-base text-[#1A1C1C] placeholder-[#737685] transition-colors focus:border-[#003D9B] focus:outline-none focus:ring-1 focus:ring-[#003D9B]"
               />
             </div>

@@ -24,7 +24,7 @@ describe('AdminAuthService', () => {
 
   it('should call login endpoint with credentials', async () => {
     const mockCredentials = {
-      email: 'admin@ai-commerce.com',
+      email: 'admin@gmail.com',
       password: 'admin123',
     };
     const mockResponse = {
@@ -32,7 +32,7 @@ describe('AdminAuthService', () => {
       refreshToken: 'test-refresh-token',
       user: {
         id: 1,
-        email: 'admin@ai-commerce.com',
+        email: 'admin@gmail.com',
         fullName: 'System Admin',
         role: 'ADMIN',
       },

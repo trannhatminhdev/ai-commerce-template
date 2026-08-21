@@ -5,7 +5,7 @@ import { VouchersService } from '../../src/modules/vouchers/application/services
 
 describe('UserVouchersController', () => {
   let controller: UserVouchersController;
-  let service: jest.Mocked<Partial<VouchersService>>;
+  let service: Partial<Record<keyof VouchersService, jest.Mock>>;
 
   beforeEach(async () => {
     service = {

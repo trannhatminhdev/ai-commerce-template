@@ -13,7 +13,7 @@ import {
 describe('ReviewsService', () => {
   let service: ReviewsService;
   let repository: jest.Mocked<IReviewRepository>;
-  let ordersService: jest.Mocked<Partial<OrdersService>>;
+  let ordersService: Partial<Record<keyof OrdersService, jest.Mock>>;
 
   beforeEach(async () => {
     repository = {

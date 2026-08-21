@@ -5,7 +5,7 @@ import { OrdersService } from '../../src/modules/orders/application/services/ord
 
 describe('AdminOrdersController', () => {
   let controller: AdminOrdersController;
-  let service: jest.Mocked<Partial<OrdersService>>;
+  let service: Partial<Record<keyof OrdersService, jest.Mock>>;
 
   beforeEach(async () => {
     service = {
