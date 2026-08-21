@@ -1,6 +1,6 @@
 <template>
   <div
-    class="relative flex min-h-screen min-h-[100dvh] w-full flex-col justify-between overflow-x-hidden bg-[#F9F9F9] font-['Inter',sans-serif] text-[#1A1C1C] antialiased selection:bg-[#003D9B] selection:text-white"
+    class="relative flex min-h-screen w-full flex-col justify-between overflow-x-hidden bg-[#F9F9F9] font-['Inter',sans-serif] text-[#1A1C1C] antialiased selection:bg-[#003D9B] selection:text-white"
   >
     <!-- Subtle Background Decorative Element (Full screen) -->
     <div

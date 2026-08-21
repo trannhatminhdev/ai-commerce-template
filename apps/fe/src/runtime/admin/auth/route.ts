@@ -1,10 +1,8 @@
 import { createResolver } from '@nuxt/kit';
 import type { NuxtPage } from '@nuxt/schema';
+import { ADMIN_LOGIN_ROUTE_NAME, ADMIN_LOGIN_ROUTE_PATH } from './constants';
 
 const resolver = createResolver(import.meta.url);
-
-export const ADMIN_LOGIN_ROUTE_NAME = 'admin-login';
-export const ADMIN_LOGIN_ROUTE_PATH = '/admin/login';
 
 export default {
   name: ADMIN_LOGIN_ROUTE_NAME,

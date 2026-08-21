@@ -32,7 +32,7 @@
         <!-- Brand / Header -->
         <div class="flex items-center justify-between pb-8">
           <NuxtLink
-            :to="{ name: 'admin-products' }"
+            :to="ADMIN_CATEGORIES_ROUTE_PATH"
             class="group flex flex-col focus:outline-none"
             @click="closeMobileMenu"
           >
@@ -233,6 +233,8 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import { useRoute, useAdminAuth } from '#imports';
+import { ADMIN_CATEGORIES_ROUTE_PATH } from '../categories/constants';
+import { ADMIN_LOGIN_ROUTE_PATH } from '../auth/constants';
 
 // Layout state
 const isMobileMenuOpen = ref(false);
@@ -257,7 +259,7 @@ const toggleProfileMenu = () => {
 const handleLogout = async () => {
   isProfileMenuOpen.value = false;
   closeMobileMenu();
-  await logout('/admin/login');
+  await logout(ADMIN_LOGIN_ROUTE_PATH);
 };
 
 // Close dropdown on outside click
@@ -317,7 +319,7 @@ const navigationItems = [
   {
     id: 'categories',
     name: 'Categories',
-    to: '/admin/categories',
+    to: ADMIN_CATEGORIES_ROUTE_PATH,
     icon: '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>',
   },
   {

@@ -1,5 +1,6 @@
+import { navigateTo, useCookie, useState } from '#app';
 import { computed, ref } from 'vue';
-import { useCookie, useState, navigateTo } from '#app';
+import { ADMIN_LOGIN_ROUTE_PATH } from '../constants';
 import { adminAuthService } from '../services/admin-auth.service';
 import type {
   AdminLoginCredentials,
@@ -72,7 +73,9 @@ export function useAdminAuth() {
   /**
    * Đăng xuất admin
    */
-  const logout = async (redirectTo: string = '/admin/login'): Promise<void> => {
+  const logout = async (
+    redirectTo: string = ADMIN_LOGIN_ROUTE_PATH,
+  ): Promise<void> => {
     isLoading.value = true;
     try {
       if (refreshToken.value) {
