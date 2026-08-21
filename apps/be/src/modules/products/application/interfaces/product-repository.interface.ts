@@ -14,7 +14,7 @@ export interface IProductRepository {
     take?: number;
     search?: string;
     categoryId?: number;
-  }): Promise<Product[]>;
+  }): Promise<{ data: Product[]; total: number }>;
   findProductById(id: number): Promise<Product | null>;
   updateProduct(
     id: number,

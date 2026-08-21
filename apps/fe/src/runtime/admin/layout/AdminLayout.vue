@@ -236,6 +236,8 @@ import { useRoute, useAdminAuth } from '#imports';
 import { ADMIN_CATEGORIES_ROUTE_PATH } from '#fe/admin/categories/constants';
 import { ADMIN_LOGIN_ROUTE_PATH } from '#fe/admin/auth/constants';
 
+import { ADMIN_PRODUCTS_ROUTE_PATH } from '#fe/admin/products/constants';
+
 // Layout state
 const isMobileMenuOpen = ref(false);
 const isProfileMenuOpen = ref(false);
@@ -324,8 +326,8 @@ const navigationItems = [
   },
   {
     id: 'products',
-    name: 'Products',
-    to: '/admin/products',
+    name: 'Sản phẩm',
+    to: ADMIN_PRODUCTS_ROUTE_PATH,
     icon: '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>',
   },
   {

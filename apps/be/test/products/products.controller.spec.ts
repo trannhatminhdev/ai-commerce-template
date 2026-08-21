@@ -27,7 +27,10 @@ describe('ProductsController', () => {
 
   describe('findAll', () => {
     it('should find all products', async () => {
-      const expectedResult = [{ id: 1, name: 'Test' }] as any[];
+      const expectedResult = {
+        data: [{ id: 1, name: 'Test' } as any],
+        total: 1,
+      };
       service.findAllProducts!.mockResolvedValue(expectedResult);
 
       const result = await controller.findAll('0', '10', 'Test', '1');

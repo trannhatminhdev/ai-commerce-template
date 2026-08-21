@@ -25,20 +25,31 @@ export class ProductRepository implements IProductRepository {
     take?: number;
     search?: string;
     categoryId?: number;
-  }): Promise<Product[]> {
+  }): Promise<{ data: Product[]; total: number }> {
     const { skip, take, search, categoryId } = params || {};
-    return this.prisma.product.findMany({
-      skip,
-      take,
-      where: {
-        ...(categoryId ? { categoryId } : {}),
-        ...(search ? { name: { contains: search } } : {}), // Dùng contains cho SQLite
-      },
-      include: {
-        category: true,
-        images: true,
-      },
-    });
+
+    const where = {
+      ...(categoryId ? { categoryId } : {}),
+      ...(search ? { name: { contains: search } } : {}), // Dùng contains cho SQLite
+    };
+
+    const [data, total] = await Promise.all([
+      this.prisma.product.findMany({
+        skip,
+        take,
+        where,
+        include: {
+          category: true,
+          images: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+      this.prisma.product.count({ where }),
+    ]);
+
+    return { data, total };
   }
 
   async findProductById(id: number): Promise<Product | null> {

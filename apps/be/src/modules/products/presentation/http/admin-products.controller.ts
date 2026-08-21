@@ -24,7 +24,7 @@ import { Roles } from '../../../auth/presentation/http/decorators/roles.decorato
 import * as fs from 'fs';
 import { Role } from '../../../../shared/constants/role.enum';
 
-const uploadPath = './uploads/products';
+const uploadPath = './static/uploads/products';
 if (!fs.existsSync(uploadPath)) {
   fs.mkdirSync(uploadPath, { recursive: true });
 }
@@ -78,7 +78,7 @@ export class AdminProductsController {
     if (!file) {
       throw new BadRequestException('File is required');
     }
-    const imageUrl = `/uploads/products/${file.filename}`;
+    const imageUrl = `/static/uploads/products/${file.filename}`;
     const isThumb = isThumbnail === 'true';
 
     return this.productsService.addImage(id, {
