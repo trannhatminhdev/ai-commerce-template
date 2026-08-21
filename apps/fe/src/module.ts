@@ -1,5 +1,6 @@
 import {
   addImportsDir,
+  addLayout,
   addPlugin,
   createResolver,
   defineNuxtModule,
@@ -60,6 +61,14 @@ export default defineNuxtModule<ModuleOptions>({
 
     // Do not add the extension since the `.ts` will be transpiled to `.mjs` after `npm run prepack`
     addPlugin(resolver.resolve('./runtime/plugin'));
+
+    // Register layouts
+    addLayout(
+      {
+        src: resolver.resolve('./runtime/admin/layout/AdminLayout.vue'),
+      },
+      'admin',
+    );
 
     extendPages((pages) => {
       setupAdminRoutes(pages);
