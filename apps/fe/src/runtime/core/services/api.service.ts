@@ -1,4 +1,4 @@
-import { useRuntimeConfig } from '#app';
+import { useRuntimeConfig, useCookie } from '#app';
 import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
 import type { ApiErrorResponse } from '../types/api.types';
 
@@ -8,6 +8,7 @@ export interface ApiClientOptions<
   R extends NitroFetchRequest = NitroFetchRequest,
 > extends NitroFetchOptions<R> {
   token?: string | null;
+  _retry?: boolean;
 }
 
 interface FetchErrorShape {
@@ -21,6 +22,77 @@ interface FetchErrorShape {
 }
 
 export class ApiService {
+  private isRefreshing = false;
+  private refreshPromise: Promise<string | null> | null = null;
+
+  private async handleTokenRefresh(): Promise<string | null> {
+    if (this.isRefreshing && this.refreshPromise) {
+      return this.refreshPromise;
+    }
+
+    this.isRefreshing = true;
+    this.refreshPromise = (async () => {
+      try {
+        const adminRefresh = useCookie<string | null>('admin_refresh_token');
+        const userRefresh = useCookie<string | null>('refresh_token');
+
+        let currentRefreshToken = adminRefresh.value;
+        let tokenType = 'admin';
+
+        if (!currentRefreshToken) {
+          currentRefreshToken = userRefresh.value;
+          tokenType = 'user';
+        }
+
+        if (!currentRefreshToken) return null;
+
+        const baseUrl = this.getBaseUrl();
+        const response = await $fetch<{
+          accessToken: string;
+          refreshToken: string;
+        }>('/auth/refresh', {
+          baseURL: baseUrl,
+          method: 'POST',
+          body: { refreshToken: currentRefreshToken },
+        });
+
+        if (response && response.accessToken) {
+          if (tokenType === 'admin') {
+            const adminAccess = useCookie<string | null>('admin_access_token');
+            adminAccess.value = response.accessToken;
+            adminRefresh.value = response.refreshToken;
+          } else {
+            const userAccess = useCookie<string | null>('access_token');
+            userAccess.value = response.accessToken;
+            userRefresh.value = response.refreshToken;
+          }
+          return response.accessToken;
+        }
+        return null;
+      } catch {
+        try {
+          const adminAccess = useCookie<string | null>('admin_access_token');
+          const adminRefresh = useCookie<string | null>('admin_refresh_token');
+          if (adminAccess.value) adminAccess.value = null;
+          if (adminRefresh.value) adminRefresh.value = null;
+
+          const userAccess = useCookie<string | null>('access_token');
+          const userRefresh = useCookie<string | null>('refresh_token');
+          if (userAccess.value) userAccess.value = null;
+          if (userRefresh.value) userRefresh.value = null;
+        } catch {
+          // Ignore errors
+        }
+        return null;
+      } finally {
+        this.isRefreshing = false;
+        this.refreshPromise = null;
+      }
+    })();
+
+    return this.refreshPromise;
+  }
+
   private getBaseUrl(): string {
     try {
       const config = useRuntimeConfig();
@@ -54,13 +126,28 @@ export class ApiService {
         headers,
       });
     } catch (error: unknown) {
+      const fetchError = error as FetchErrorShape;
+      const status =
+        fetchError?.response?.status || fetchError?.statusCode || 500;
+
+      if (status === 401 && !options._retry) {
+        const newAccessToken = await this.handleTokenRefresh();
+
+        if (newAccessToken) {
+          return this.request<T>(endpoint, {
+            ...options,
+            token: newAccessToken,
+            _retry: true,
+          });
+        }
+      }
+
       const message = this.extractErrorMessage(error);
       const customError = new Error(message);
-      const fetchError = error as FetchErrorShape;
 
       (
         customError as Error & { status?: number; data?: ApiErrorResponse }
-      ).status = fetchError?.response?.status || fetchError?.statusCode || 500;
+      ).status = status;
       (
         customError as Error & { status?: number; data?: ApiErrorResponse }
       ).data = fetchError?.data || fetchError?.response?._data;
