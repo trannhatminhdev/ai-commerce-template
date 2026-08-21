@@ -30,6 +30,9 @@ export default defineNuxtModule<ModuleOptions>({
   async setup(options, nuxt) {
     const resolver = createResolver(import.meta.url);
 
+    // Register module internal alias
+    nuxt.options.alias['#fe'] = resolver.resolve('./runtime');
+
     // Pass module options to runtime config
     nuxt.options.runtimeConfig.public = nuxt.options.runtimeConfig.public || {};
     nuxt.options.runtimeConfig.public.apiBase =

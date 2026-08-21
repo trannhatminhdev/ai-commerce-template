@@ -24,6 +24,7 @@ interface FetchErrorShape {
 export class ApiService {
   private isRefreshing = false;
   private refreshPromise: Promise<string | null> | null = null;
+  private isAlertShown = false;
 
   private async handleTokenRefresh(): Promise<string | null> {
     if (this.isRefreshing && this.refreshPromise) {
@@ -139,6 +140,32 @@ export class ApiService {
             token: newAccessToken,
             _retry: true,
           });
+        }
+      }
+
+      if (status === 401) {
+        if (import.meta.client && !this.isAlertShown) {
+          const isLoginPage =
+            window.location.pathname === '/login' ||
+            window.location.pathname === '/admin/login';
+
+          if (!isLoginPage) {
+            this.isAlertShown = true;
+            window.alert('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+            try {
+              const { navigateTo } = await import('#app');
+              if (window.location.pathname.startsWith('/admin')) {
+                await navigateTo('/admin/login');
+              } else {
+                await navigateTo('/login');
+              }
+            } catch {
+              // Ignore error outside Nuxt context
+            }
+            setTimeout(() => {
+              this.isAlertShown = false;
+            }, 5000);
+          }
         }
       }
 
