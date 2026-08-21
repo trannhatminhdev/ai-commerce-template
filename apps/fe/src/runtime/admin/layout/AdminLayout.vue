@@ -83,6 +83,7 @@
             ]"
             @click="closeMobileMenu"
           >
+            <!-- eslint-disable vue/no-v-html -->
             <span
               class="w-5 h-5 shrink-0 flex items-center justify-center transition-colors [&>svg]:w-5 [&>svg]:h-5"
               :class="

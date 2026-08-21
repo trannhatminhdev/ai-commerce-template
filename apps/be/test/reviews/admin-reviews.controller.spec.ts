@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { Test, TestingModule } from '@nestjs/testing';
 import { AdminReviewsController } from '../../src/modules/reviews/presentation/http/admin-reviews.controller';
 import { ReviewsService } from '../../src/modules/reviews/application/services/reviews.service';

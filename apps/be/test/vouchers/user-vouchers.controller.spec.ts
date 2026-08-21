@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserVouchersController } from '../../src/modules/vouchers/presentation/http/user-vouchers.controller';
 import { VouchersService } from '../../src/modules/vouchers/application/services/vouchers.service';
