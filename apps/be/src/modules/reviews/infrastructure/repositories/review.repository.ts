@@ -28,6 +28,49 @@ export class ReviewRepository implements IReviewRepository {
     });
   }
 
+  async findAll(params?: {
+    skip?: number;
+    take?: number;
+    productId?: number;
+    userId?: number;
+  }) {
+    const { skip, take, productId, userId } = params || {};
+    const where = {
+      ...(productId ? { productId } : {}),
+      ...(userId ? { userId } : {}),
+    };
+
+    const [data, total] = await Promise.all([
+      this.prisma.review.findMany({
+        skip,
+        take,
+        where,
+        include: {
+          user: {
+            select: {
+              id: true,
+              fullName: true,
+            },
+          },
+          product: {
+            select: {
+              id: true,
+              name: true,
+              images: {
+                where: { isThumbnail: true },
+                take: 1,
+              },
+            },
+          },
+        },
+        orderBy: { createdAt: 'desc' },
+      }),
+      this.prisma.review.count({ where }),
+    ]);
+
+    return { data, total };
+  }
+
   async findByProductId(productId: number) {
     return this.prisma.review.findMany({
       where: { productId },

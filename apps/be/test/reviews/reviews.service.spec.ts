@@ -17,6 +17,7 @@ describe('ReviewsService', () => {
   beforeEach(async () => {
     repository = {
       create: jest.fn(),
+      findAll: jest.fn(),
       findByProductId: jest.fn(),
       findById: jest.fn(),
       delete: jest.fn(),
@@ -132,6 +133,22 @@ describe('ReviewsService', () => {
       const result = await service.replyToReview(1, 'Thanks');
       expect(result).toEqual(updated);
       expect(repository.updateReply).toHaveBeenCalledWith(1, 'Thanks');
+    });
+    describe('getAllReviews', () => {
+      it('should call findAll with correct pagination', async () => {
+        repository.findAll.mockResolvedValue({
+          data: [],
+          total: 0,
+        });
+
+        await service.getAllReviews({ page: 2, limit: 5 });
+        expect(repository.findAll).toHaveBeenCalledWith({
+          skip: 5,
+          take: 5,
+          productId: undefined,
+          userId: undefined,
+        });
+      });
     });
   });
 });

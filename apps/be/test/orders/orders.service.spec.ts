@@ -49,7 +49,7 @@ describe('OrdersService', () => {
 
   describe('getAllOrders', () => {
     it('should return all orders', async () => {
-      const orders = [{ id: 1, userId: 1 }] as any[];
+      const orders = { data: [{ id: 1, userId: 1 }] as any[], total: 1 };
       repository.findAll.mockResolvedValue(orders);
 
       const result = await service.getAllOrders();
@@ -59,12 +59,16 @@ describe('OrdersService', () => {
 
   describe('getMyOrders', () => {
     it('should return orders for a specific user', async () => {
-      const orders = [{ id: 1, userId: 1 }] as any[];
+      const orders = { data: [{ id: 1, userId: 1 }] as any[], total: 1 };
       repository.findAll.mockResolvedValue(orders);
 
       const result = await service.getMyOrders(1);
       expect(result).toEqual(orders);
-      expect(repository.findAll).toHaveBeenCalledWith({ userId: 1 });
+      expect(repository.findAll).toHaveBeenCalledWith({
+        userId: 1,
+        skip: undefined,
+        take: undefined,
+      });
     });
   });
 

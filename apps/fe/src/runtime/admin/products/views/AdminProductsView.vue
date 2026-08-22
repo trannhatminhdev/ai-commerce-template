@@ -158,6 +158,7 @@ const {
   isLoading,
   isSubmitting,
   fetchProducts,
+  deleteProduct,
 } = useAdminProducts();
 
 const { categories, fetchCategories } = useAdminCategories();
@@ -206,5 +207,14 @@ const openDeleteModal = (p: Product) => {
 const closeDeleteModal = () => {
   isDeleteModalOpen.value = false;
   deletingProduct.value = null;
+};
+
+const handleConfirmDelete = async () => {
+  if (deletingProduct.value) {
+    const success = await deleteProduct(deletingProduct.value.id);
+    if (success) {
+      closeDeleteModal();
+    }
+  }
 };
 </script>

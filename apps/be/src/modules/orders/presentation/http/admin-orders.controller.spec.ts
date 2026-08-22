@@ -6,7 +6,11 @@ import { UpdateOrderStatusDto } from './dtos/update-order-status.dto';
 
 describe('AdminOrdersController', () => {
   let controller: AdminOrdersController;
-  let mockService: jest.Mocked<Partial<OrdersService>>;
+  let mockService: {
+    getAllOrders: jest.Mock;
+    getOrderById: jest.Mock;
+    updateOrderStatus: jest.Mock;
+  };
 
   beforeEach(async () => {
     mockService = {

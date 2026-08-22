@@ -1,5 +1,5 @@
-/* eslint-disable */
 import { Injectable, BadRequestException } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import {
   IOrderRepository,
   CreateOrderData,

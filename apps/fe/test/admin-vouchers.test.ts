@@ -83,7 +83,7 @@ describe('AdminVouchersService', () => {
     const createData = {
       code: 'NEW10',
       discountValue: 10,
-      discountType: 'PERCENTAGE' as const,
+      discountType: 'PERCENT' as const,
     };
     const createdVoucher = { id: 2, ...createData, isActive: true };
 

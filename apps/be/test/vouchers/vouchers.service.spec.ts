@@ -58,7 +58,7 @@ describe('VouchersService', () => {
 
   describe('getAllVouchers', () => {
     it('should return all vouchers', async () => {
-      const vouchers = [{ id: 1, code: 'TEST' }] as any[];
+      const vouchers = { data: [{ id: 1, code: 'TEST' }] as any[], total: 1 };
       repository.findAll.mockResolvedValue(vouchers);
 
       const result = await service.getAllVouchers();

@@ -12,10 +12,24 @@ import { JwtAuthGuard } from '../../../auth/presentation/http/guards/jwt-auth.gu
 import { RolesGuard } from '../../../auth/presentation/http/guards/roles.guard';
 import { Roles } from '../../../auth/presentation/http/decorators/roles.decorator';
 import { ReplyReviewDto } from './dtos/reply-review.dto';
+import { GetReviewsDto } from './dtos/get-reviews.dto';
+import { Get, Query } from '@nestjs/common';
 
 @Controller('admin/reviews')
 export class AdminReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
+
+  @Get()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  async getAllReviews(@Query() query: GetReviewsDto) {
+    return this.reviewsService.getAllReviews({
+      page: query.page,
+      limit: query.limit,
+      productId: query.productId,
+      userId: query.userId,
+    });
+  }
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)

@@ -48,6 +48,23 @@ export class ReviewsService {
     return this.reviewRepository.findByProductId(productId);
   }
 
+  async getAllReviews(params?: {
+    page?: number;
+    limit?: number;
+    productId?: number;
+    userId?: number;
+  }) {
+    const { page = 1, limit = 10, productId, userId } = params || {};
+    const skip = (page - 1) * limit;
+
+    return this.reviewRepository.findAll({
+      skip,
+      take: limit,
+      productId,
+      userId,
+    });
+  }
+
   async deleteReviewAsAdmin(id: number) {
     const review = await this.reviewRepository.findById(id);
     if (!review) {

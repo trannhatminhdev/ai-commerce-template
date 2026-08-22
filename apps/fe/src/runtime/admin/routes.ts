@@ -4,6 +4,7 @@ import categoriesRoute from './categories/route';
 import productsRoute from './products/route';
 import ordersRoute from './orders/route';
 import vouchersRoute from './vouchers/route';
+import reviewsRoute from './reviews/route';
 
 export const setupAdminRoutes = (pages: NuxtPage[]) => {
   pages.push({
@@ -25,4 +26,5 @@ export const setupAdminRoutes = (pages: NuxtPage[]) => {
   } else {
     pages.push(productsRoute as NuxtPage);
   }
+  pages.push(reviewsRoute as NuxtPage);
 };

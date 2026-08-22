@@ -317,7 +317,6 @@ const openCreateModal = () => {
     discountType: 'PERCENT',
     discountValue: 0,
   };
-  formError.value = null;
   isModalOpen.value = true;
   nextTick(() => {
     codeInputRef.value?.focus();

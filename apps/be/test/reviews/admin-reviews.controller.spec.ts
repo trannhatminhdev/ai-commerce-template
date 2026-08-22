@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AdminReviewsController } from '../../src/modules/reviews/presentation/http/admin-reviews.controller';
 import { ReviewsService } from '../../src/modules/reviews/application/services/reviews.service';
+import { GetReviewsDto } from '../../src/modules/reviews/presentation/http/dtos/get-reviews.dto';
 
 describe('AdminReviewsController', () => {
   let controller: AdminReviewsController;
@@ -8,6 +9,7 @@ describe('AdminReviewsController', () => {
 
   beforeEach(async () => {
     service = {
+      getAllReviews: jest.fn(),
       deleteReviewAsAdmin: jest.fn(),
       replyToReview: jest.fn(),
     };
@@ -47,6 +49,18 @@ describe('AdminReviewsController', () => {
       const result = await controller.replyToReview(1, dto);
       expect(result).toEqual(updated);
       expect(service.replyToReview).toHaveBeenCalledWith(1, 'Thanks');
+    });
+    describe('getAllReviews', () => {
+      it('should return all reviews', async () => {
+        const mockResult = { data: [], total: 0 };
+        service.getAllReviews!.mockResolvedValue(mockResult as any);
+
+        const dto: GetReviewsDto = { page: 1, limit: 10 };
+        const result = await controller.getAllReviews(dto);
+
+        expect(result).toEqual(mockResult);
+        expect(service.getAllReviews).toHaveBeenCalledWith(dto);
+      });
     });
   });
 });

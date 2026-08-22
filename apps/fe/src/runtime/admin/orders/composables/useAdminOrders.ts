@@ -90,8 +90,9 @@ export function useAdminOrders() {
       }
 
       const index = orders.value.findIndex((o) => o.id === id);
-      if (index !== -1) {
-        orders.value[index] = { ...orders.value[index], status };
+      const existingOrder = orders.value[index];
+      if (index !== -1 && existingOrder) {
+        orders.value[index] = { ...existingOrder, status };
       }
 
       toast.success('Cập nhật trạng thái thành công.');
