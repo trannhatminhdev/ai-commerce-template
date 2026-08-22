@@ -5,7 +5,11 @@ export const IVoucherRepository = Symbol('IVoucherRepository');
 export interface IVoucherRepository {
   findById(id: number): Promise<Voucher | null>;
   findByCode(code: string): Promise<Voucher | null>;
-  findAll(): Promise<Voucher[]>;
+  findAll(params?: {
+    skip?: number;
+    take?: number;
+    search?: string;
+  }): Promise<{ data: Voucher[]; total: number }>;
   create(
     data: Omit<Voucher, 'id' | 'createdAt' | 'updatedAt'>,
   ): Promise<Voucher>;

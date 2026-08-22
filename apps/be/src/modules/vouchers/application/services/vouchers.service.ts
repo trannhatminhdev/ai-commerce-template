@@ -22,8 +22,12 @@ export class VouchersService {
     return this.voucherRepository.create(dto);
   }
 
-  async getAllVouchers() {
-    return this.voucherRepository.findAll();
+  async getAllVouchers(params?: {
+    skip?: number;
+    take?: number;
+    search?: string;
+  }) {
+    return this.voucherRepository.findAll(params);
   }
 
   async getVoucherById(id: number) {

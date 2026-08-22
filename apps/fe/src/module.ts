@@ -65,6 +65,8 @@ export default defineNuxtModule<ModuleOptions>({
     addImportsDir(resolver.resolve('./runtime/admin/categories/services'));
     addImportsDir(resolver.resolve('./runtime/admin/products/composables'));
     addImportsDir(resolver.resolve('./runtime/admin/products/services'));
+    addImportsDir(resolver.resolve('./runtime/admin/vouchers/composables'));
+    addImportsDir(resolver.resolve('./runtime/admin/vouchers/services'));
 
     // Do not add the extension since the `.ts` will be transpiled to `.mjs` after `npm run prepack`
     addPlugin(resolver.resolve('./runtime/plugin'));

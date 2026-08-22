@@ -6,6 +6,7 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { VouchersService } from '../../application/services/vouchers.service';
 import { CreateVoucherDto } from './dtos/create-voucher.dto';
@@ -20,8 +21,16 @@ export class AdminVouchersController {
   }
 
   @Get()
-  getAllVouchers() {
-    return this.vouchersService.getAllVouchers();
+  getAllVouchers(
+    @Query('skip') skip?: string,
+    @Query('take') take?: string,
+    @Query('search') search?: string,
+  ) {
+    return this.vouchersService.getAllVouchers({
+      skip: skip ? parseInt(skip, 10) : undefined,
+      take: take ? parseInt(take, 10) : undefined,
+      search,
+    });
   }
 
   @Get(':id')

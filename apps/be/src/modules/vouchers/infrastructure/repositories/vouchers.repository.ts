@@ -15,10 +15,28 @@ export class VouchersRepository implements IVoucherRepository {
     return this.prisma.voucher.findUnique({ where: { code } });
   }
 
-  async findAll(): Promise<Voucher[]> {
-    return this.prisma.voucher.findMany({
-      orderBy: { createdAt: 'desc' },
-    });
+  async findAll(params?: {
+    skip?: number;
+    take?: number;
+    search?: string;
+  }): Promise<{ data: Voucher[]; total: number }> {
+    const { skip, take, search } = params || {};
+
+    const where = {
+      ...(search ? { code: { contains: search } } : {}),
+    };
+
+    const [data, total] = await Promise.all([
+      this.prisma.voucher.findMany({
+        skip,
+        take,
+        where,
+        orderBy: { createdAt: 'desc' },
+      }),
+      this.prisma.voucher.count({ where }),
+    ]);
+
+    return { data, total };
   }
 
   async create(
