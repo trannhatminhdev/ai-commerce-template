@@ -1,14 +1,16 @@
 import { ref, computed } from 'vue';
 import { useState, useRuntimeConfig } from '#app';
-import { useAdminAuth } from '../../auth/composables/useAdminAuth';
-import { adminProductsService } from '../services/admin-products.service';
+import { useToast } from '#fe/core/composables/useToast';
+import { useAdminAuth } from '#fe/admin/auth/composables/useAdminAuth';
+import { adminProductsService } from '#fe/admin/products/services/admin-products.service';
 import type {
   Product,
   CreateProductInput,
   UpdateProductInput,
-} from '../types/product.types';
+} from '#fe/admin/products/types/product.types';
 
 export function useAdminProducts() {
+  const toast = useToast();
   const { accessToken } = useAdminAuth();
 
   const products = useState<Product[]>('admin_products_list', () => []);
@@ -17,8 +19,6 @@ export function useAdminProducts() {
   const totalItems = ref(0);
   const isLoading = ref(false);
   const isSubmitting = ref(false);
-  const errorMessage = ref<string | null>(null);
-  const successMessage = ref<string | null>(null);
   const searchQuery = ref('');
 
   const filteredProducts = computed(() => products.value);
@@ -26,14 +26,8 @@ export function useAdminProducts() {
     Math.ceil(totalItems.value / itemsPerPage.value),
   );
 
-  const clearMessages = () => {
-    errorMessage.value = null;
-    successMessage.value = null;
-  };
-
   const fetchProducts = async (): Promise<Product[]> => {
     isLoading.value = true;
-    errorMessage.value = null;
 
     try {
       const skip = (currentPage.value - 1) * itemsPerPage.value;
@@ -48,9 +42,9 @@ export function useAdminProducts() {
       return res.data;
     } catch (err: unknown) {
       if (err instanceof Error) {
-        errorMessage.value = err.message;
+        toast.error(err.message);
       } else {
-        errorMessage.value = 'Không thể tải danh sách sản phẩm.';
+        toast.error('Không thể tải danh sách sản phẩm.');
       }
       return [];
     } finally {
@@ -60,7 +54,6 @@ export function useAdminProducts() {
 
   const getProductById = async (id: number): Promise<Product | null> => {
     isLoading.value = true;
-    errorMessage.value = null;
 
     try {
       const data = await adminProductsService.getProductById(
@@ -70,9 +63,9 @@ export function useAdminProducts() {
       return data;
     } catch (err: unknown) {
       if (err instanceof Error) {
-        errorMessage.value = err.message;
+        toast.error(err.message);
       } else {
-        errorMessage.value = 'Không thể tải thông tin sản phẩm.';
+        toast.error('Không thể tải thông tin sản phẩm.');
       }
       return null;
     } finally {
@@ -84,13 +77,11 @@ export function useAdminProducts() {
     input: CreateProductInput,
   ): Promise<Product | null> => {
     if (!input.name || !input.name.trim()) {
-      errorMessage.value = 'Tên sản phẩm không được để trống.';
+      toast.error('Tên sản phẩm không được để trống.');
       return null;
     }
 
     isSubmitting.value = true;
-    errorMessage.value = null;
-    successMessage.value = null;
 
     try {
       const newProduct = await adminProductsService.createProduct(
@@ -98,13 +89,20 @@ export function useAdminProducts() {
         accessToken.value || undefined,
       );
       products.value = [newProduct, ...products.value];
-      successMessage.value = 'Tạo sản phẩm thành công.';
+      totalItems.value++;
+
+      // Nếu vượt quá số lượng item/trang, ta bỏ bớt phần tử cuối
+      if (products.value.length > itemsPerPage.value) {
+        products.value.pop();
+      }
+
+      toast.success('Tạo sản phẩm thành công.');
       return newProduct;
     } catch (err: unknown) {
       if (err instanceof Error) {
-        errorMessage.value = err.message;
+        toast.error(err.message);
       } else {
-        errorMessage.value = 'Có lỗi xảy ra khi tạo sản phẩm.';
+        toast.error('Có lỗi xảy ra khi tạo sản phẩm.');
       }
       return null;
     } finally {
@@ -117,8 +115,6 @@ export function useAdminProducts() {
     input: UpdateProductInput,
   ): Promise<Product | null> => {
     isSubmitting.value = true;
-    errorMessage.value = null;
-    successMessage.value = null;
 
     try {
       const updatedProduct = await adminProductsService.updateProduct(
@@ -130,13 +126,13 @@ export function useAdminProducts() {
       if (index !== -1) {
         products.value[index] = updatedProduct;
       }
-      successMessage.value = 'Cập nhật sản phẩm thành công.';
+      toast.success('Cập nhật sản phẩm thành công.');
       return updatedProduct;
     } catch (err: unknown) {
       if (err instanceof Error) {
-        errorMessage.value = err.message;
+        toast.error(err.message);
       } else {
-        errorMessage.value = 'Có lỗi xảy ra khi cập nhật sản phẩm.';
+        toast.error('Có lỗi xảy ra khi cập nhật sản phẩm.');
       }
       return null;
     } finally {
@@ -146,8 +142,6 @@ export function useAdminProducts() {
 
   const deleteProduct = async (id: number): Promise<boolean> => {
     isSubmitting.value = true;
-    errorMessage.value = null;
-    successMessage.value = null;
 
     try {
       await adminProductsService.deleteProduct(
@@ -155,13 +149,28 @@ export function useAdminProducts() {
         accessToken.value || undefined,
       );
       products.value = products.value.filter((p) => p.id !== id);
-      successMessage.value = 'Xóa sản phẩm thành công.';
+      if (totalItems.value > 0) totalItems.value--;
+      toast.success('Xóa sản phẩm thành công.');
+
+      // Tự động fetch lại nếu số lượng item trên trang hiện tại bằng 0
+      // (ví dụ xóa sản phẩm duy nhất ở trang cuối)
+      if (products.value.length === 0 && currentPage.value > 1) {
+        currentPage.value--;
+        fetchProducts();
+      } else if (
+        products.value.length < itemsPerPage.value &&
+        totalItems.value >= itemsPerPage.value
+      ) {
+        // Cập nhật lại danh sách cho đầy đủ page
+        fetchProducts();
+      }
+
       return true;
     } catch (err: unknown) {
       if (err instanceof Error) {
-        errorMessage.value = err.message;
+        toast.error(err.message);
       } else {
-        errorMessage.value = 'Có lỗi xảy ra khi xóa sản phẩm.';
+        toast.error('Có lỗi xảy ra khi xóa sản phẩm.');
       }
       return false;
     } finally {
@@ -184,7 +193,7 @@ export function useAdminProducts() {
       );
       return true;
     } catch {
-      errorMessage.value = 'Lỗi khi upload ảnh.';
+      toast.error('Lỗi khi upload ảnh.');
       return false;
     } finally {
       isSubmitting.value = false;
@@ -201,7 +210,7 @@ export function useAdminProducts() {
       );
       return true;
     } catch {
-      errorMessage.value = 'Lỗi khi xóa ảnh.';
+      toast.error('Lỗi khi xóa ảnh.');
       return false;
     } finally {
       isSubmitting.value = false;
@@ -218,7 +227,7 @@ export function useAdminProducts() {
       );
       return true;
     } catch {
-      errorMessage.value = 'Lỗi khi set ảnh bìa.';
+      toast.error('Lỗi khi set ảnh bìa.');
       return false;
     } finally {
       isSubmitting.value = false;
@@ -239,7 +248,7 @@ export function useAdminProducts() {
       );
       return true;
     } catch {
-      errorMessage.value = 'Lỗi khi thêm thuộc tính.';
+      toast.error('Lỗi khi thêm thuộc tính.');
       return false;
     } finally {
       isSubmitting.value = false;
@@ -256,7 +265,7 @@ export function useAdminProducts() {
       );
       return true;
     } catch {
-      errorMessage.value = 'Lỗi khi xóa thuộc tính.';
+      toast.error('Lỗi khi xóa thuộc tính.');
       return false;
     } finally {
       isSubmitting.value = false;
@@ -271,11 +280,8 @@ export function useAdminProducts() {
     totalPages,
     isLoading,
     isSubmitting,
-    errorMessage,
-    successMessage,
     searchQuery,
     filteredProducts,
-    clearMessages,
     fetchProducts,
     getProductById,
     createProduct,

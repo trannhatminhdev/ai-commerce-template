@@ -35,95 +35,6 @@
       </button>
     </div>
 
-    <!-- Feedback Alerts -->
-    <Transition
-      enter-active-class="transition duration-200 ease-out"
-      enter-from-class="transform -translate-y-2 opacity-0"
-      enter-to-class="transform translate-y-0 opacity-100"
-      leave-active-class="transition duration-150 ease-in"
-      leave-from-class="transform translate-y-0 opacity-100"
-      leave-to-class="transform -translate-y-2 opacity-0"
-    >
-      <div
-        v-if="successMessage"
-        class="flex items-center justify-between rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"
-        role="alert"
-      >
-        <div class="flex items-center gap-2">
-          <svg
-            class="h-5 w-5 shrink-0 text-emerald-600"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-              clip-rule="evenodd"
-            />
-          </svg>
-          <span>{{ successMessage }}</span>
-        </div>
-        <button
-          type="button"
-          class="text-emerald-600 hover:text-emerald-800 focus:outline-none"
-          aria-label="Đóng thông báo"
-          @click="clearMessages"
-        >
-          <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-            <path
-              fill-rule="evenodd"
-              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        </button>
-      </div>
-    </Transition>
-
-    <Transition
-      enter-active-class="transition duration-200 ease-out"
-      enter-from-class="transform -translate-y-2 opacity-0"
-      enter-to-class="transform translate-y-0 opacity-100"
-      leave-active-class="transition duration-150 ease-in"
-      leave-from-class="transform translate-y-0 opacity-100"
-      leave-to-class="transform -translate-y-2 opacity-0"
-    >
-      <div
-        v-if="errorMessage"
-        class="flex items-center justify-between rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
-        role="alert"
-      >
-        <div class="flex items-center gap-2">
-          <svg
-            class="h-5 w-5 shrink-0 text-red-600"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-              clip-rule="evenodd"
-            />
-          </svg>
-          <span>{{ errorMessage }}</span>
-        </div>
-        <button
-          type="button"
-          class="text-red-600 hover:text-red-800 focus:outline-none"
-          aria-label="Đóng thông báo"
-          @click="clearMessages"
-        >
-          <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-            <path
-              fill-rule="evenodd"
-              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        </button>
-      </div>
-    </Transition>
-
     <!-- Filters & Stats Card -->
     <div
       class="flex flex-col gap-3 rounded-xl border border-[#C3C6D6] bg-white p-4 shadow-xs sm:flex-row sm:items-center sm:justify-between"
@@ -330,298 +241,25 @@
     </div>
 
     <!-- Pagination -->
-    <div
-      v-if="totalPages > 1"
-      class="flex items-center justify-between border-t border-[#C3C6D6] bg-white px-4 py-3 sm:px-6 rounded-xl shadow-xs mt-4"
-    >
-      <div class="flex flex-1 justify-between sm:hidden">
-        <button
-          :disabled="currentPage === 1"
-          class="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
-          @click="prevPage"
-        >
-          Trang trước
-        </button>
-        <button
-          :disabled="currentPage === totalPages"
-          class="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
-          @click="nextPage"
-        >
-          Trang sau
-        </button>
-      </div>
-      <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-        <div>
-          <p class="text-sm text-gray-700">
-            Hiển thị từ
-            <span class="font-medium">{{
-              (currentPage - 1) * itemsPerPage + 1
-            }}</span>
-            đến
-            <span class="font-medium">{{
-              Math.min(currentPage * itemsPerPage, totalItems)
-            }}</span>
-            trong số
-            <span class="font-medium">{{ totalItems }}</span>
-            voucher
-          </p>
-        </div>
-        <div>
-          <nav
-            class="isolate inline-flex -space-x-px rounded-md shadow-sm"
-            aria-label="Pagination"
-          >
-            <button
-              :disabled="currentPage === 1"
-              class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:opacity-50 focus:z-20 focus:outline-offset-0"
-              @click="prevPage"
-            >
-              <span class="sr-only">Trang trước</span>
-              <svg
-                class="h-5 w-5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
-                  clip-rule="evenodd"
-                />
-              </svg>
-            </button>
-            <button
-              v-for="page in totalPages"
-              :key="page"
-              :class="[
-                page === currentPage
-                  ? 'relative z-10 inline-flex items-center bg-[#003D9B] px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#003D9B]'
-                  : 'relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0',
-              ]"
-              @click="goToPage(page)"
-            >
-              {{ page }}
-            </button>
-            <button
-              :disabled="currentPage === totalPages"
-              class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:opacity-50 focus:z-20 focus:outline-offset-0"
-              @click="nextPage"
-            >
-              <span class="sr-only">Trang sau</span>
-              <svg
-                class="h-5 w-5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
-                  clip-rule="evenodd"
-                />
-              </svg>
-            </button>
-          </nav>
-        </div>
-      </div>
-    </div>
-
-    <!-- Create Modal -->
-    <div
-      v-if="isModalOpen"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4"
-    >
-      <div
-        class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs transition-opacity"
-        @click="closeModal"
-      />
-
-      <div
-        class="relative w-full max-w-md rounded-xl bg-white p-6 shadow-2xl transition-all"
-      >
-        <div
-          class="flex items-center justify-between pb-4 border-b border-slate-100"
-        >
-          <h3 class="text-lg font-bold text-[#003D9B]">Thêm voucher mới</h3>
-          <button
-            type="button"
-            class="p-1 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-colors focus:outline-none"
-            @click="closeModal"
-          >
-            <svg
-              class="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-        </div>
-
-        <form class="mt-4 space-y-4" @submit.prevent="handleSaveVoucher">
-          <!-- Code -->
-          <div class="flex flex-col gap-1.5">
-            <label
-              for="voucher-code"
-              class="text-sm font-semibold text-[#434654]"
-            >
-              Mã voucher <span class="text-red-500">*</span>
-            </label>
-            <input
-              id="voucher-code"
-              ref="codeInputRef"
-              v-model="form.code"
-              type="text"
-              required
-              placeholder="VD: SUMMER2024"
-              class="w-full rounded-lg border border-[#C3C6D6] bg-white px-3.5 py-2.5 text-sm uppercase text-[#1A1C1C] placeholder-[#737685] transition-colors focus:border-[#003D9B] focus:outline-none focus:ring-1 focus:ring-[#003D9B]"
-            />
-          </div>
-
-          <!-- Type -->
-          <div class="flex flex-col gap-1.5">
-            <label
-              for="voucher-type"
-              class="text-sm font-semibold text-[#434654]"
-            >
-              Loại giảm giá <span class="text-red-500">*</span>
-            </label>
-            <select
-              id="voucher-type"
-              v-model="form.discountType"
-              class="w-full rounded-lg border border-[#C3C6D6] bg-white px-3.5 py-2.5 text-sm text-[#1A1C1C] transition-colors focus:border-[#003D9B] focus:outline-none focus:ring-1 focus:ring-[#003D9B]"
-            >
-              <option value="PERCENT">Phần trăm (%)</option>
-              <option value="FIXED">Số tiền cố định (đ)</option>
-            </select>
-          </div>
-
-          <!-- Value -->
-          <div class="flex flex-col gap-1.5">
-            <label
-              for="voucher-value"
-              class="text-sm font-semibold text-[#434654]"
-            >
-              Giá trị giảm giá <span class="text-red-500">*</span>
-            </label>
-            <input
-              id="voucher-value"
-              v-model.number="form.discountValue"
-              type="number"
-              min="0"
-              required
-              :placeholder="
-                form.discountType === 'PERCENT' ? 'VD: 10' : 'VD: 50000'
-              "
-              class="w-full rounded-lg border border-[#C3C6D6] bg-white px-3.5 py-2.5 text-sm text-[#1A1C1C] placeholder-[#737685] transition-colors focus:border-[#003D9B] focus:outline-none focus:ring-1 focus:ring-[#003D9B]"
-            />
-            <p v-if="formError" class="text-xs text-red-600 font-medium mt-0.5">
-              {{ formError }}
-            </p>
-          </div>
-
-          <div
-            class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100"
-          >
-            <button
-              type="button"
-              class="rounded-lg border border-[#C3C6D6] bg-white px-4 py-2 text-sm font-semibold text-[#434654] hover:bg-slate-50 transition-colors focus:outline-none"
-              @click="closeModal"
-            >
-              Hủy
-            </button>
-            <button
-              type="submit"
-              :disabled="isSubmitting"
-              class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#003D9B] px-4 py-2 text-sm font-semibold text-white hover:bg-[#002f78] transition-colors disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none"
-            >
-              <span
-                v-if="isSubmitting"
-                class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent"
-              />
-              <span>Tạo voucher</span>
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Confirm Delete Modal -->
-    <div
-      v-if="isDeleteModalOpen"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4"
-    >
-      <div
-        class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs transition-opacity"
-        @click="closeDeleteModal"
-      />
-
-      <div
-        class="relative w-full max-w-sm rounded-xl bg-white p-6 shadow-2xl transition-all text-center"
-      >
-        <div
-          class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-600 mb-4"
-        >
-          <svg
-            class="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-            />
-          </svg>
-        </div>
-
-        <h3 class="text-base font-bold text-[#1A1C1C]">Xác nhận xóa voucher</h3>
-        <p class="mt-2 text-sm text-[#5C5F60]">
-          Bạn có chắc chắn muốn xóa voucher
-          <strong class="text-[#1A1C1C] uppercase"
-            >"{{ deletingVoucher?.code }}"</strong
-          >? Thao tác này không thể hoàn tác.
-        </p>
-
-        <div class="mt-6 flex items-center justify-center gap-3">
-          <button
-            type="button"
-            class="rounded-lg border border-[#C3C6D6] bg-white px-4 py-2 text-sm font-semibold text-[#434654] hover:bg-slate-50 transition-colors focus:outline-none"
-            @click="closeDeleteModal"
-          >
-            Hủy
-          </button>
-          <button
-            type="button"
-            :disabled="isSubmitting"
-            class="inline-flex items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none"
-            @click="handleConfirmDelete"
-          >
-            <span
-              v-if="isSubmitting"
-              class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent"
-            />
-            <span>Xác nhận xóa</span>
-          </button>
-        </div>
-      </div>
-    </div>
+    <AppPagination
+      :current-page="currentPage"
+      :total-pages="totalPages"
+      :total-items="totalItems"
+      :items-per-page="itemsPerPage"
+      item-name="mã giảm giá"
+      @update:current-page="goToPage"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, nextTick, watch } from 'vue';
 import { definePageMeta } from '#imports';
-import { useAdminVouchers } from '../composables/useAdminVouchers';
-import type { Voucher, CreateVoucherInput } from '../types/voucher.types';
+import { useAdminVouchers } from '#fe/admin/vouchers/composables/useAdminVouchers';
+import type {
+  Voucher,
+  CreateVoucherInput,
+} from '#fe/admin/vouchers/types/voucher.types';
 
 definePageMeta({
   layout: 'admin',
@@ -635,13 +273,8 @@ const {
   filteredVouchers,
   searchQuery,
   isLoading,
-  isSubmitting,
-  errorMessage,
-  successMessage,
-  clearMessages,
+
   fetchVouchers,
-  createVoucher,
-  deleteVoucher,
 } = useAdminVouchers();
 
 // Form / Modal states
@@ -651,7 +284,6 @@ const form = ref<CreateVoucherInput>({
   discountType: 'PERCENT',
   discountValue: 0,
 });
-const formError = ref<string | null>(null);
 const codeInputRef = ref<HTMLInputElement | null>(null);
 
 // Delete Modal states
@@ -671,20 +303,6 @@ watch(searchQuery, () => {
     fetchVouchers();
   }, 500); // debounce 500ms
 });
-
-const prevPage = () => {
-  if (currentPage.value > 1) {
-    currentPage.value--;
-    fetchVouchers();
-  }
-};
-
-const nextPage = () => {
-  if (currentPage.value < totalPages.value) {
-    currentPage.value++;
-    fetchVouchers();
-  }
-};
 
 const goToPage = (page: number) => {
   if (page >= 1 && page <= totalPages.value) {
@@ -706,49 +324,9 @@ const openCreateModal = () => {
   });
 };
 
-const closeModal = () => {
-  isModalOpen.value = false;
-  formError.value = null;
-};
-
-const handleSaveVoucher = async () => {
-  if (!form.value.code.trim()) {
-    formError.value = 'Vui lòng nhập mã voucher.';
-    return;
-  }
-  if (form.value.discountValue <= 0) {
-    formError.value = 'Giá trị giảm giá phải lớn hơn 0.';
-    return;
-  }
-  if (form.value.discountType === 'PERCENT' && form.value.discountValue > 100) {
-    formError.value = 'Phần trăm giảm giá không được vượt quá 100%.';
-    return;
-  }
-
-  formError.value = null;
-
-  const res = await createVoucher(form.value);
-  if (res) {
-    closeModal();
-  }
-};
-
 const openDeleteModal = (voucher: Voucher) => {
   deletingVoucher.value = voucher;
   isDeleteModalOpen.value = true;
-};
-
-const closeDeleteModal = () => {
-  isDeleteModalOpen.value = false;
-  deletingVoucher.value = null;
-};
-
-const handleConfirmDelete = async () => {
-  if (!deletingVoucher.value) return;
-  const ok = await deleteVoucher(deletingVoucher.value.id);
-  if (ok) {
-    closeDeleteModal();
-  }
 };
 
 const formatDate = (dateValue?: string | Date) => {

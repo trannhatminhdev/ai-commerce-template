@@ -13,12 +13,12 @@ export class OrdersService {
     return this.orderRepository.createWithItems(dto);
   }
 
-  async getAllOrders() {
-    return this.orderRepository.findAll();
+  async getAllOrders(skip?: number, take?: number, search?: string) {
+    return this.orderRepository.findAll({ skip, take, search });
   }
 
-  async getMyOrders(userId: number) {
-    return this.orderRepository.findAll({ userId });
+  async getMyOrders(userId: number, skip?: number, take?: number) {
+    return this.orderRepository.findAll({ userId, skip, take });
   }
 
   async getOrderById(id: number) {

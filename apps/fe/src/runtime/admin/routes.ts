@@ -2,6 +2,7 @@ import type { NuxtPage } from '@nuxt/schema';
 import authRoute from './auth/route';
 import categoriesRoute from './categories/route';
 import productsRoute from './products/route';
+import ordersRoute from './orders/route';
 import vouchersRoute from './vouchers/route';
 
 export const setupAdminRoutes = (pages: NuxtPage[]) => {
@@ -13,6 +14,11 @@ export const setupAdminRoutes = (pages: NuxtPage[]) => {
 
   pages.push(authRoute);
   pages.push(categoriesRoute);
+  if (Array.isArray(ordersRoute)) {
+    pages.push(...ordersRoute);
+  } else {
+    pages.push(ordersRoute as NuxtPage);
+  }
   pages.push(vouchersRoute);
   if (Array.isArray(productsRoute)) {
     pages.push(...productsRoute);

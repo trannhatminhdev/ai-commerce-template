@@ -222,11 +222,13 @@
         </div>
       </header>
 
-      <!-- Main Page Content Area -->
       <main class="flex-1 p-4 sm:p-6 lg:p-8 min-w-0 max-w-full">
         <slot />
       </main>
     </div>
+
+    <!-- Global Toast Notifications -->
+    <AppToast />
   </div>
 </template>
 
@@ -237,6 +239,7 @@ import { ADMIN_CATEGORIES_ROUTE_PATH } from '#fe/admin/categories/constants';
 import { ADMIN_LOGIN_ROUTE_PATH } from '#fe/admin/auth/constants';
 
 import { ADMIN_PRODUCTS_ROUTE_PATH } from '#fe/admin/products/constants';
+import { ADMIN_ORDERS_ROUTE_PATH } from '#fe/admin/orders/constants';
 import { ADMIN_VOUCHERS_ROUTE_PATH } from '#fe/admin/vouchers/constants';
 
 // Layout state
@@ -333,8 +336,8 @@ const navigationItems = [
   },
   {
     id: 'orders',
-    name: 'Orders',
-    to: '/admin/orders',
+    name: 'Đơn hàng',
+    to: ADMIN_ORDERS_ROUTE_PATH,
     icon: '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>',
   },
   {
@@ -358,6 +361,9 @@ const isActiveRoute = (path: string) => {
     path === '/admin/products' &&
     (route.path === '/admin' || route.path === '/admin/products')
   ) {
+    return true;
+  }
+  if (path === '/admin/orders' && route.path.startsWith('/admin/orders')) {
     return true;
   }
   return route.path.startsWith(path);

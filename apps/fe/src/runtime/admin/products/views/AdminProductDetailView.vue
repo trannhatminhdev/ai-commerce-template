@@ -12,21 +12,6 @@
       </h1>
     </div>
 
-    <div
-      v-if="successMessage"
-      class="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800 flex justify-between"
-    >
-      <span>{{ successMessage }}</span>
-      <button @click="clearMessages">x</button>
-    </div>
-    <div
-      v-if="errorMessage"
-      class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 flex justify-between"
-    >
-      <span>{{ errorMessage }}</span>
-      <button @click="clearMessages">x</button>
-    </div>
-
     <form
       class="space-y-6 bg-white p-6 rounded-xl border shadow-sm"
       @submit.prevent="handleSave"
@@ -243,13 +228,14 @@
 <script setup lang="ts">
 import { ref, onMounted, reactive, computed } from 'vue';
 import { useRoute, useRouter, definePageMeta } from '#imports';
-import { useAdminProducts } from '../composables/useAdminProducts';
-import { useAdminCategories } from '../../categories/composables/useAdminCategories';
-import { useImageUrl } from '../../../core/composables/useImageUrl';
+
+import { useAdminProducts } from '#fe/admin/products/composables/useAdminProducts';
+import { useAdminCategories } from '#fe/admin/categories/composables/useAdminCategories';
+import { useImageUrl } from '#fe/core/composables/useImageUrl';
 import type {
   ProductImage,
   ProductSpecification,
-} from '../types/product.types';
+} from '#fe/admin/products/types/product.types';
 
 definePageMeta({ layout: 'admin' });
 
@@ -260,9 +246,6 @@ const {
   getProductById,
   createProduct,
   updateProduct,
-  errorMessage,
-  successMessage,
-  clearMessages,
   uploadImage,
   deleteImage,
   setThumbnail,
@@ -440,7 +423,6 @@ const handleSave = async () => {
         }
       }
 
-      successMessage.value = 'Lưu sản phẩm thành công!';
       setTimeout(() => {
         router.push('/admin/products');
       }, 1000);

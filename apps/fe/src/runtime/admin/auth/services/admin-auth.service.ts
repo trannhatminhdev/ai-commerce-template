@@ -1,13 +1,10 @@
-import {
-  apiService,
-  type ApiService,
-} from '../../../core/services/api.service';
+import { apiService, type ApiService } from '#fe/core/services/api.service';
 import type {
   AdminAuthTokens,
   AdminLoginCredentials,
   AdminLoginResponse,
   AdminLogoutResponse,
-} from '../types/auth.types';
+} from '#fe/admin/auth/types/auth.types';
 
 export class AdminAuthService {
   constructor(private readonly api: ApiService = apiService) {}

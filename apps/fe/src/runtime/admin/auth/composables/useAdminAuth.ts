@@ -1,12 +1,13 @@
 import { navigateTo, useCookie, useState } from '#app';
 import { computed, ref } from 'vue';
-import { ADMIN_LOGIN_ROUTE_PATH } from '../constants';
-import { adminAuthService } from '../services/admin-auth.service';
+import { useToast } from '#fe/core/composables/useToast';
+import { ADMIN_LOGIN_ROUTE_PATH } from '#fe/admin/auth/constants';
+import { adminAuthService } from '#fe/admin/auth/services/admin-auth.service';
 import type {
   AdminLoginCredentials,
   AdminLoginResponse,
   AdminUser,
-} from '../types/auth.types';
+} from '#fe/admin/auth/types/auth.types';
 
 export function useAdminAuth() {
   const user = useState<AdminUser | null>('admin_auth_user', () => null);
@@ -37,8 +38,9 @@ export function useAdminAuth() {
     credentials: AdminLoginCredentials,
     redirectTo: string = '/admin',
   ): Promise<AdminLoginResponse | null> => {
+    const toast = useToast();
     if (!credentials.email || !credentials.password) {
-      errorMessage.value = 'Vui lòng nhập đầy đủ email và mật khẩu.';
+      toast.error('Vui lòng nhập đầy đủ email và mật khẩu.');
       return null;
     }
 
@@ -53,6 +55,8 @@ export function useAdminAuth() {
       refreshToken.value = response.refreshToken;
       user.value = response.user;
 
+      toast.success('Đăng nhập thành công!');
+
       if (redirectTo) {
         await navigateTo(redirectTo);
       }
@@ -60,9 +64,9 @@ export function useAdminAuth() {
       return response;
     } catch (err: unknown) {
       if (err instanceof Error) {
-        errorMessage.value = err.message;
+        toast.error(err.message);
       } else {
-        errorMessage.value = 'Đăng nhập thất bại. Vui lòng thử lại.';
+        toast.error('Đăng nhập thất bại. Vui lòng thử lại.');
       }
       return null;
     } finally {

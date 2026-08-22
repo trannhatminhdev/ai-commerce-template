@@ -1,12 +1,9 @@
-import {
-  apiService,
-  type ApiService,
-} from '../../../core/services/api.service';
+import { apiService, type ApiService } from '#fe/core/services/api.service';
 import type {
   Voucher,
   CreateVoucherInput,
   PaginatedVoucherResponse,
-} from '../types/voucher.types';
+} from '#fe/admin/vouchers/types/voucher.types';
 
 export class AdminVouchersService {
   constructor(private readonly api: ApiService = apiService) {}

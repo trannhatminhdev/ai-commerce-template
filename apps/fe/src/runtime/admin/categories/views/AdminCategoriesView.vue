@@ -35,95 +35,6 @@
       </button>
     </div>
 
-    <!-- Feedback Alerts -->
-    <Transition
-      enter-active-class="transition duration-200 ease-out"
-      enter-from-class="transform -translate-y-2 opacity-0"
-      enter-to-class="transform translate-y-0 opacity-100"
-      leave-active-class="transition duration-150 ease-in"
-      leave-from-class="transform translate-y-0 opacity-100"
-      leave-to-class="transform -translate-y-2 opacity-0"
-    >
-      <div
-        v-if="successMessage"
-        class="flex items-center justify-between rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"
-        role="alert"
-      >
-        <div class="flex items-center gap-2">
-          <svg
-            class="h-5 w-5 shrink-0 text-emerald-600"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-              clip-rule="evenodd"
-            />
-          </svg>
-          <span>{{ successMessage }}</span>
-        </div>
-        <button
-          type="button"
-          class="text-emerald-600 hover:text-emerald-800 focus:outline-none"
-          aria-label="Đóng thông báo"
-          @click="clearMessages"
-        >
-          <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-            <path
-              fill-rule="evenodd"
-              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        </button>
-      </div>
-    </Transition>
-
-    <Transition
-      enter-active-class="transition duration-200 ease-out"
-      enter-from-class="transform -translate-y-2 opacity-0"
-      enter-to-class="transform translate-y-0 opacity-100"
-      leave-active-class="transition duration-150 ease-in"
-      leave-from-class="transform translate-y-0 opacity-100"
-      leave-to-class="transform -translate-y-2 opacity-0"
-    >
-      <div
-        v-if="errorMessage"
-        class="flex items-center justify-between rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
-        role="alert"
-      >
-        <div class="flex items-center gap-2">
-          <svg
-            class="h-5 w-5 shrink-0 text-red-600"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-              clip-rule="evenodd"
-            />
-          </svg>
-          <span>{{ errorMessage }}</span>
-        </div>
-        <button
-          type="button"
-          class="text-red-600 hover:text-red-800 focus:outline-none"
-          aria-label="Đóng thông báo"
-          @click="clearMessages"
-        >
-          <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-            <path
-              fill-rule="evenodd"
-              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        </button>
-      </div>
-    </Transition>
-
     <!-- Filters & Stats Card -->
     <div
       class="flex flex-col gap-3 rounded-xl border border-[#C3C6D6] bg-white p-4 shadow-xs sm:flex-row sm:items-center sm:justify-between"
@@ -420,76 +331,27 @@
     </div>
 
     <!-- Confirm Delete Modal -->
-    <div
-      v-if="isDeleteModalOpen"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4"
+    <AppConfirmModal
+      :is-open="isDeleteModalOpen"
+      :is-submitting="isSubmitting"
+      title="Xác nhận xóa danh mục"
+      @close="closeDeleteModal"
+      @confirm="handleConfirmDelete"
     >
-      <div
-        class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs transition-opacity"
-        @click="closeDeleteModal"
-      />
-
-      <div
-        class="relative w-full max-w-sm rounded-xl bg-white p-6 shadow-2xl transition-all text-center"
-      >
-        <div
-          class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-600 mb-4"
-        >
-          <svg
-            class="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-            />
-          </svg>
-        </div>
-
-        <h3 class="text-base font-bold text-[#1A1C1C]">
-          Xác nhận xóa danh mục
-        </h3>
-        <p class="mt-2 text-sm text-[#5C5F60]">
-          Bạn có chắc chắn muốn xóa danh mục
-          <strong class="text-[#1A1C1C]">"{{ deletingCategory?.name }}"</strong
-          >? Thao tác này không thể hoàn tác.
-        </p>
-
-        <div class="mt-6 flex items-center justify-center gap-3">
-          <button
-            type="button"
-            class="rounded-lg border border-[#C3C6D6] bg-white px-4 py-2 text-sm font-semibold text-[#434654] hover:bg-slate-50 transition-colors focus:outline-none"
-            @click="closeDeleteModal"
-          >
-            Hủy
-          </button>
-          <button
-            type="button"
-            :disabled="isSubmitting"
-            class="inline-flex items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none"
-            @click="handleConfirmDelete"
-          >
-            <span
-              v-if="isSubmitting"
-              class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent"
-            />
-            <span>Xác nhận xóa</span>
-          </button>
-        </div>
-      </div>
-    </div>
+      <template #message>
+        Bạn có chắc chắn muốn xóa danh mục
+        <strong class="text-[#1A1C1C]">"{{ deletingCategory?.name }}"</strong>?
+        Thao tác này không thể hoàn tác.
+      </template>
+    </AppConfirmModal>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, nextTick } from 'vue';
 import { definePageMeta } from '#imports';
-import { useAdminCategories } from '../composables/useAdminCategories';
-import type { Category } from '../types/category.types';
+import { useAdminCategories } from '#fe/admin/categories/composables/useAdminCategories';
+import type { Category } from '#fe/admin/categories/types/category.types';
 
 definePageMeta({
   layout: 'admin',
@@ -501,9 +363,6 @@ const {
   searchQuery,
   isLoading,
   isSubmitting,
-  errorMessage,
-  successMessage,
-  clearMessages,
   fetchCategories,
   createCategory,
   updateCategory,

@@ -226,25 +226,7 @@
             </div>
           </div>
 
-          <!-- Error Alert (if any) -->
-          <div
-            v-if="errorMessage"
-            class="flex items-center gap-2 rounded border border-red-200 bg-red-50 p-3 text-xs text-red-700"
-            role="alert"
-          >
-            <svg
-              class="h-4 w-4 shrink-0 text-red-500"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                clip-rule="evenodd"
-              />
-            </svg>
-            <span>{{ errorMessage }}</span>
-          </div>
+          <!-- Removed Inline Error Alert, handled by global AppToast -->
 
           <!-- Actions -->
           <div class="flex flex-col gap-2 pt-2">
@@ -287,18 +269,21 @@
         Bảng điều khiển quản trị v1.0.0
       </p>
     </footer>
+
+    <!-- Global Toast Notifications -->
+    <AppToast />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useAdminAuth } from '../composables/useAdminAuth';
+import { useAdminAuth } from '#fe/admin/auth/composables/useAdminAuth';
 
 const email = ref('');
 const password = ref('');
 const showPassword = ref(false);
 
-const { login, isLoading, errorMessage } = useAdminAuth();
+const { login, isLoading } = useAdminAuth();
 
 const handleLogin = async () => {
   await login(

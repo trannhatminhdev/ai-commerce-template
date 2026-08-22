@@ -65,6 +65,8 @@ export default defineNuxtModule<ModuleOptions>({
     addImportsDir(resolver.resolve('./runtime/admin/categories/services'));
     addImportsDir(resolver.resolve('./runtime/admin/products/composables'));
     addImportsDir(resolver.resolve('./runtime/admin/products/services'));
+    addImportsDir(resolver.resolve('./runtime/admin/orders/composables'));
+    addImportsDir(resolver.resolve('./runtime/admin/orders/services'));
     addImportsDir(resolver.resolve('./runtime/admin/vouchers/composables'));
     addImportsDir(resolver.resolve('./runtime/admin/vouchers/services'));
 

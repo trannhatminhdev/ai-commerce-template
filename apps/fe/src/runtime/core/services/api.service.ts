@@ -1,6 +1,6 @@
 import { useRuntimeConfig, useCookie } from '#app';
 import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
-import type { ApiErrorResponse } from '../types/api.types';
+import type { ApiErrorResponse } from '#fe/core/types/api.types';
 
 export type RequestBody = BodyInit | Record<string, unknown> | null | undefined;
 

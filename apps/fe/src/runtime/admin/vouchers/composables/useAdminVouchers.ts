@@ -1,10 +1,15 @@
 import { ref, computed } from 'vue';
 import { useState } from '#app';
-import { useAdminAuth } from '../../auth/composables/useAdminAuth';
-import { adminVouchersService } from '../services/admin-vouchers.service';
-import type { Voucher, CreateVoucherInput } from '../types/voucher.types';
+import { useToast } from '#fe/core/composables/useToast';
+import { useAdminAuth } from '#fe/admin/auth/composables/useAdminAuth';
+import { adminVouchersService } from '#fe/admin/vouchers/services/admin-vouchers.service';
+import type {
+  Voucher,
+  CreateVoucherInput,
+} from '#fe/admin/vouchers/types/voucher.types';
 
 export function useAdminVouchers() {
+  const toast = useToast();
   const { accessToken } = useAdminAuth();
 
   const vouchers = useState<Voucher[]>('admin_vouchers_list', () => []);
@@ -13,8 +18,6 @@ export function useAdminVouchers() {
   const totalItems = ref(0);
   const isLoading = ref(false);
   const isSubmitting = ref(false);
-  const errorMessage = ref<string | null>(null);
-  const successMessage = ref<string | null>(null);
   const searchQuery = ref('');
 
   const filteredVouchers = computed(() => vouchers.value);
@@ -22,17 +25,11 @@ export function useAdminVouchers() {
     Math.ceil(totalItems.value / itemsPerPage.value),
   );
 
-  const clearMessages = () => {
-    errorMessage.value = null;
-    successMessage.value = null;
-  };
-
   /**
    * Tải danh sách voucher từ backend
    */
   const fetchVouchers = async (): Promise<Voucher[]> => {
     isLoading.value = true;
-    errorMessage.value = null;
 
     try {
       const skip = (currentPage.value - 1) * itemsPerPage.value;
@@ -49,9 +46,9 @@ export function useAdminVouchers() {
       return res.data;
     } catch (err: unknown) {
       if (err instanceof Error) {
-        errorMessage.value = err.message;
+        toast.error(err.message);
       } else {
-        errorMessage.value = 'Không thể tải danh sách voucher.';
+        toast.error('Không thể tải danh sách voucher.');
       }
       return [];
     } finally {
@@ -64,7 +61,6 @@ export function useAdminVouchers() {
    */
   const getVoucherById = async (id: number): Promise<Voucher | null> => {
     isLoading.value = true;
-    errorMessage.value = null;
 
     try {
       const data = await adminVouchersService.getVoucherById(
@@ -74,9 +70,9 @@ export function useAdminVouchers() {
       return data;
     } catch (err: unknown) {
       if (err instanceof Error) {
-        errorMessage.value = err.message;
+        toast.error(err.message);
       } else {
-        errorMessage.value = 'Không thể tải thông tin voucher.';
+        toast.error('Không thể tải thông tin voucher.');
       }
       return null;
     } finally {
@@ -91,17 +87,16 @@ export function useAdminVouchers() {
     input: CreateVoucherInput,
   ): Promise<Voucher | null> => {
     if (!input.code || !input.code.trim()) {
-      errorMessage.value = 'Mã voucher không được để trống.';
+      toast.error('Mã voucher không được để trống.');
       return null;
     }
 
     if (input.discountValue < 0) {
-      errorMessage.value = 'Giá trị giảm giá không được âm.';
+      toast.error('Giá trị giảm giá không được âm.');
       return null;
     }
 
     isSubmitting.value = true;
-    clearMessages();
 
     try {
       const newVoucher = await adminVouchersService.createVoucher(
@@ -113,13 +108,19 @@ export function useAdminVouchers() {
         accessToken.value || undefined,
       );
       vouchers.value = [newVoucher, ...vouchers.value];
-      successMessage.value = 'Thêm voucher mới thành công.';
+      totalItems.value++;
+
+      if (vouchers.value.length > itemsPerPage.value) {
+        vouchers.value.pop();
+      }
+
+      toast.success('Thêm voucher mới thành công.');
       return newVoucher;
     } catch (err: unknown) {
       if (err instanceof Error) {
-        errorMessage.value = err.message;
+        toast.error(err.message);
       } else {
-        errorMessage.value = 'Không thể tạo voucher mới.';
+        toast.error('Không thể tạo voucher mới.');
       }
       return null;
     } finally {
@@ -132,7 +133,6 @@ export function useAdminVouchers() {
    */
   const deleteVoucher = async (id: number): Promise<boolean> => {
     isSubmitting.value = true;
-    clearMessages();
 
     try {
       await adminVouchersService.deleteVoucher(
@@ -140,13 +140,25 @@ export function useAdminVouchers() {
         accessToken.value || undefined,
       );
       vouchers.value = vouchers.value.filter((v) => v.id !== id);
-      successMessage.value = 'Xóa voucher thành công.';
+      if (totalItems.value > 0) totalItems.value--;
+      toast.success('Xóa voucher thành công.');
+
+      if (vouchers.value.length === 0 && currentPage.value > 1) {
+        currentPage.value--;
+        fetchVouchers();
+      } else if (
+        vouchers.value.length < itemsPerPage.value &&
+        totalItems.value >= itemsPerPage.value
+      ) {
+        fetchVouchers();
+      }
+
       return true;
     } catch (err: unknown) {
       if (err instanceof Error) {
-        errorMessage.value = err.message;
+        toast.error(err.message);
       } else {
-        errorMessage.value = 'Không thể xóa voucher.';
+        toast.error('Không thể xóa voucher.');
       }
       return false;
     } finally {
@@ -164,9 +176,6 @@ export function useAdminVouchers() {
     searchQuery,
     isLoading,
     isSubmitting,
-    errorMessage,
-    successMessage,
-    clearMessages,
     fetchVouchers,
     getVoucherById,
     createVoucher,

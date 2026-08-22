@@ -19,9 +19,18 @@ export interface CreateOrderData {
 
 export type OrderWithItems = Order & { items: OrderItem[] };
 
+export interface FindAllOrdersParams {
+  userId?: number;
+  skip?: number;
+  take?: number;
+  search?: string;
+}
+
 export interface IOrderRepository {
   createWithItems(data: CreateOrderData): Promise<OrderWithItems>;
-  findAll(filters?: { userId?: number }): Promise<OrderWithItems[]>;
+  findAll(
+    params?: FindAllOrdersParams,
+  ): Promise<{ data: OrderWithItems[]; total: number }>;
   findById(id: number): Promise<OrderWithItems | null>;
   updateStatus(id: number, status: string): Promise<OrderWithItems>;
   hasUserPurchasedProduct(userId: number, productId: number): Promise<boolean>;

@@ -45,7 +45,7 @@ describe('UserOrdersController', () => {
 
       const result = await controller.getMyOrders(1);
       expect(result).toEqual(expectedResult);
-      expect(service.getMyOrders).toHaveBeenCalledWith(1);
+      expect(service.getMyOrders).toHaveBeenCalledWith(1, undefined, undefined);
     });
   });
 

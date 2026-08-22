@@ -1,12 +1,9 @@
-import {
-  apiService,
-  type ApiService,
-} from '../../../core/services/api.service';
+import { apiService, type ApiService } from '#fe/core/services/api.service';
 import type {
   Product,
   CreateProductInput,
   UpdateProductInput,
-} from '../types/product.types';
+} from '#fe/admin/products/types/product.types';
 
 export class AdminProductsService {
   constructor(private readonly api: ApiService = apiService) {}

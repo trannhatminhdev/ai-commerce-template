@@ -20,9 +20,17 @@ export class UserOrdersController {
   }
 
   @Get('my-orders')
-  getMyOrders(@Query('userId', ParseIntPipe) userId: number) {
+  getMyOrders(
+    @Query('userId', ParseIntPipe) userId: number,
+    @Query('skip') skip?: string,
+    @Query('take') take?: string,
+  ) {
     // Note: In a real app, userId should come from JWT token via a decorator like @CurrentUser()
-    return this.ordersService.getMyOrders(userId);
+    return this.ordersService.getMyOrders(
+      userId,
+      skip ? parseInt(skip, 10) : undefined,
+      take ? parseInt(take, 10) : undefined,
+    );
   }
 
   @Get(':id')

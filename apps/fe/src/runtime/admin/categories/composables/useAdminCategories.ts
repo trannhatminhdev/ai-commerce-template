@@ -1,21 +1,21 @@
 import { ref, computed } from 'vue';
 import { useState } from '#app';
-import { useAdminAuth } from '../../auth/composables/useAdminAuth';
-import { adminCategoriesService } from '../services/admin-categories.service';
+import { useAdminAuth } from '#fe/admin/auth/composables/useAdminAuth';
+import { adminCategoriesService } from '#fe/admin/categories/services/admin-categories.service';
+import { useToast } from '#fe/core/composables/useToast';
 import type {
   Category,
   CreateCategoryInput,
   UpdateCategoryInput,
-} from '../types/category.types';
+} from '#fe/admin/categories/types/category.types';
 
 export function useAdminCategories() {
   const { accessToken } = useAdminAuth();
+  const toast = useToast();
 
   const categories = useState<Category[]>('admin_categories_list', () => []);
   const isLoading = ref(false);
   const isSubmitting = ref(false);
-  const errorMessage = ref<string | null>(null);
-  const successMessage = ref<string | null>(null);
   const searchQuery = ref('');
 
   /**
@@ -31,17 +31,11 @@ export function useAdminCategories() {
     );
   });
 
-  const clearMessages = () => {
-    errorMessage.value = null;
-    successMessage.value = null;
-  };
-
   /**
    * Tải danh sách danh mục từ backend
    */
   const fetchCategories = async (): Promise<Category[]> => {
     isLoading.value = true;
-    errorMessage.value = null;
 
     try {
       const data = await adminCategoriesService.getCategories(
@@ -51,9 +45,9 @@ export function useAdminCategories() {
       return data;
     } catch (err: unknown) {
       if (err instanceof Error) {
-        errorMessage.value = err.message;
+        toast.error(err.message);
       } else {
-        errorMessage.value = 'Không thể tải danh sách danh mục.';
+        toast.error('Không thể tải danh sách danh mục.');
       }
       return [];
     } finally {
@@ -66,7 +60,6 @@ export function useAdminCategories() {
    */
   const getCategoryById = async (id: number): Promise<Category | null> => {
     isLoading.value = true;
-    errorMessage.value = null;
 
     try {
       const data = await adminCategoriesService.getCategoryById(
@@ -76,9 +69,9 @@ export function useAdminCategories() {
       return data;
     } catch (err: unknown) {
       if (err instanceof Error) {
-        errorMessage.value = err.message;
+        toast.error(err.message);
       } else {
-        errorMessage.value = 'Không thể tải thông tin danh mục.';
+        toast.error('Không thể tải thông tin danh mục.');
       }
       return null;
     } finally {
@@ -93,12 +86,11 @@ export function useAdminCategories() {
     input: CreateCategoryInput,
   ): Promise<Category | null> => {
     if (!input.name || !input.name.trim()) {
-      errorMessage.value = 'Tên danh mục không được để trống.';
+      toast.error('Tên danh mục không được để trống.');
       return null;
     }
 
     isSubmitting.value = true;
-    clearMessages();
 
     try {
       const newCategory = await adminCategoriesService.createCategory(
@@ -106,13 +98,13 @@ export function useAdminCategories() {
         accessToken.value || undefined,
       );
       categories.value = [newCategory, ...categories.value];
-      successMessage.value = 'Thêm danh mục mới thành công.';
+      toast.success('Thêm danh mục mới thành công.');
       return newCategory;
     } catch (err: unknown) {
       if (err instanceof Error) {
-        errorMessage.value = err.message;
+        toast.error(err.message);
       } else {
-        errorMessage.value = 'Không thể tạo danh mục mới.';
+        toast.error('Không thể tạo danh mục mới.');
       }
       return null;
     } finally {
@@ -128,12 +120,11 @@ export function useAdminCategories() {
     input: UpdateCategoryInput,
   ): Promise<Category | null> => {
     if (input.name !== undefined && !input.name.trim()) {
-      errorMessage.value = 'Tên danh mục không được để trống.';
+      toast.error('Tên danh mục không được để trống.');
       return null;
     }
 
     isSubmitting.value = true;
-    clearMessages();
 
     try {
       const payload: UpdateCategoryInput = {};
@@ -152,13 +143,13 @@ export function useAdminCategories() {
         categories.value[index] = updated;
       }
 
-      successMessage.value = 'Cập nhật danh mục thành công.';
+      toast.success('Cập nhật danh mục thành công.');
       return updated;
     } catch (err: unknown) {
       if (err instanceof Error) {
-        errorMessage.value = err.message;
+        toast.error(err.message);
       } else {
-        errorMessage.value = 'Không thể cập nhật danh mục.';
+        toast.error('Không thể cập nhật danh mục.');
       }
       return null;
     } finally {
@@ -171,7 +162,6 @@ export function useAdminCategories() {
    */
   const deleteCategory = async (id: number): Promise<boolean> => {
     isSubmitting.value = true;
-    clearMessages();
 
     try {
       await adminCategoriesService.deleteCategory(
@@ -179,13 +169,13 @@ export function useAdminCategories() {
         accessToken.value || undefined,
       );
       categories.value = categories.value.filter((cat) => cat.id !== id);
-      successMessage.value = 'Xóa danh mục thành công.';
+      toast.success('Xóa danh mục thành công.');
       return true;
     } catch (err: unknown) {
       if (err instanceof Error) {
-        errorMessage.value = err.message;
+        toast.error(err.message);
       } else {
-        errorMessage.value = 'Không thể xóa danh mục.';
+        toast.error('Không thể xóa danh mục.');
       }
       return false;
     } finally {
@@ -199,9 +189,6 @@ export function useAdminCategories() {
     searchQuery,
     isLoading,
     isSubmitting,
-    errorMessage,
-    successMessage,
-    clearMessages,
     fetchCategories,
     getCategoryById,
     createCategory,

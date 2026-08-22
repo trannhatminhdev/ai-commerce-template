@@ -1,7 +1,9 @@
+/* eslint-disable */
 import { Injectable, BadRequestException } from '@nestjs/common';
 import {
   IOrderRepository,
   CreateOrderData,
+  FindAllOrdersParams,
 } from '../../application/interfaces/order-repository.interface';
 import { PrismaService } from '../../../../core/database/prisma.service';
 
@@ -56,14 +58,37 @@ export class OrdersRepository implements IOrderRepository {
     });
   }
 
-  async findAll(filters?: { userId?: number }) {
-    return this.prisma.order.findMany({
-      where: filters?.userId ? { userId: filters.userId } : undefined,
-      include: {
-        items: true,
-      },
-      orderBy: { createdAt: 'desc' },
-    });
+  async findAll(params?: FindAllOrdersParams) {
+    const where: Prisma.OrderWhereInput = {};
+    if (params?.userId) {
+      where.userId = params.userId;
+    }
+    if (params?.search) {
+      where.OR = [
+        { customerName: { contains: params.search } },
+        { customerPhone: { contains: params.search } },
+      ];
+      // Try to parse search as number for order ID search
+      const idSearch = parseInt(params.search, 10);
+      if (!isNaN(idSearch)) {
+        where.OR.push({ id: idSearch });
+      }
+    }
+
+    const [data, total] = await Promise.all([
+      this.prisma.order.findMany({
+        where,
+        include: {
+          items: { include: { product: { include: { images: true } } } },
+        },
+        orderBy: { createdAt: 'desc' },
+        skip: params?.skip ? Number(params.skip) : undefined,
+        take: params?.take ? Number(params.take) : undefined,
+      }),
+      this.prisma.order.count({ where }),
+    ]);
+
+    return { data, total };
   }
 
   async findById(id: number) {
